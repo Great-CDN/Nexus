@@ -6,7 +6,7 @@
  * Reads a local artifact file, sends it to multiple LLM APIs in parallel
  * with isolated review prompts, and generates a structured Markdown report.
  *
- * Tested providers: claude, gpt, gemini, deepseek, kimi, nim.
+ * Tested providers: claude, gpt, gemini, deepseek.
  * Each provider uses its native API schema; the script handles the mapping.
  *
  * Usage:
@@ -18,8 +18,6 @@
  *   OPENAI_API_KEY     - Required for --models gpt
  *   GOOGLE_API_KEY     - Required for --models gemini
  *   DEEPSEEK_API_KEY   - Required for --models deepseek
- *   KIMI_API_KEY       - Required for --models kimi
- *   NVIDIA_API_KEY     - Required for --models nim
  */
 
 const https = require('https');
@@ -80,8 +78,6 @@ function showCredentialHelp(missingKeys) {
   console.error('  export OPENAI_API_KEY=sk-...');
   console.error('  export GOOGLE_API_KEY=...');
   console.error('  export DEEPSEEK_API_KEY=sk-...');
-  console.error('  export KIMI_API_KEY=sk-...');
-  console.error('  export NVIDIA_API_KEY=nvapi-...');
   console.error('  # Then run this script again.\n');
   console.error('Option 2 — User-level env file:');
   console.error('  Create one of these files (outside any git repo):');
@@ -92,8 +88,6 @@ function showCredentialHelp(missingKeys) {
   console.error('    OPENAI_API_KEY=sk-...');
   console.error('    GOOGLE_API_KEY=...');
   console.error('    DEEPSEEK_API_KEY=sk-...');
-  console.error('    KIMI_API_KEY=sk-...');
-  console.error('    NVIDIA_API_KEY=nvapi-...');
   console.error('  # Then run this script again.\n');
   console.error('Security note: Never commit API keys. Both options keep secrets');
   console.error('outside project directories.\n');
@@ -180,48 +174,6 @@ const PROVIDERS = {
       'Authorization': `Bearer ${apiKey}`,
     }),
   },
-  kimi: {
-    name: 'Kimi (Moonshot)',
-    host: 'api.moonshot.cn',
-    path: '/v1/chat/completions',
-    envKey: 'KIMI_API_KEY',
-    model: 'kimi-k2',
-    maxTokens: 4096,
-    buildRequest: (apiKey, content) => ({
-      model: PROVIDERS.kimi.model,
-      max_tokens: PROVIDERS.kimi.maxTokens,
-      messages: [
-        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
-        { role: 'user', content: content },
-      ],
-    }),
-    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
-    buildHeaders: (apiKey) => ({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    }),
-  },
-  nim: {
-    name: 'NVIDIA NIM',
-    host: () => process.env.NIM_HOST || 'integrate.api.nvidia.com',
-    path: '/v1/chat/completions',
-    envKey: 'NVIDIA_API_KEY',
-    model: 'meta/llama-3.1-405b-instruct',
-    maxTokens: 4096,
-    buildRequest: (apiKey, content) => ({
-      model: process.env.NIM_MODEL || 'meta/llama-3.1-405b-instruct',
-      max_tokens: 4096,
-      messages: [
-        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
-        { role: 'user', content: content },
-      ],
-    }),
-    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
-    buildHeaders: (apiKey) => ({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    }),
-  },
 };
 
 const REVIEW_SYSTEM_PROMPT = `You are an experienced senior software engineer conducting a technical review.
@@ -264,14 +216,11 @@ Models:
   gpt      - OpenAI GPT (requires OPENAI_API_KEY)
   gemini   - Google Gemini (requires GOOGLE_API_KEY)
   deepseek - DeepSeek (requires DEEPSEEK_API_KEY)
-  kimi     - Kimi (Moonshot) (requires KIMI_API_KEY)
-  nim      - NVIDIA NIM (requires NVIDIA_API_KEY)
 
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
   node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/
-  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek
-  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek,nim`);
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek`);
 }
 
 // ---------------------------------------------------------------------------
@@ -410,7 +359,7 @@ async function main() {
   for (const model of args.models) {
     const provider = PROVIDERS[model];
     if (!provider) {
-      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek, kimi`);
+      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek`);
       process.exit(1);
     }
     const apiKey = process.env[provider.envKey];

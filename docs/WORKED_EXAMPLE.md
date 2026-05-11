@@ -49,6 +49,7 @@ Users currently configure CDN rules through raw JSON. This is error-prone, requi
 - [ ] AC-5: Rule set can be imported from JSON and rendered correctly
 - [ ] AC-6: UI displays which phase each rule belongs to with visual distinction
 - [ ] AC-7: Editor supports at least 20 rules per phase without performance degradation (<100ms re-render)
+- [ ] AC-8: Rapid add/delete operations do not produce orphaned state
 
 ## Assumptions
 
@@ -344,6 +345,7 @@ All Rule Editor functionality: CRUD operations, validation, import/export, drag-
 | AC-5 | Integration | Pass |
 | AC-6 | Manual | Pass |
 | AC-7 | Manual | Pass |
+| AC-8 | Unit + Manual | Pass |
 ```
 
 ### Snapshot
@@ -430,7 +432,7 @@ Bug fix
 
 ## Reference
 - Issue: "Imported rules don't maintain priority order"
-- Commit: `a1b2c3d`
+- Commit: `fix(rule-editor): preserve priority field during JSON import`
 
 ## Summary
 Fix priority ordering bug in Rule Editor JSON import.

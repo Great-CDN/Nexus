@@ -26,6 +26,28 @@ Enter exploration when any of these are true:
 
 If you can write a clear problem statement and know roughly what the solution looks like, skip exploration. Go straight to Nexus execution.
 
+## When Exploration Is Forbidden
+
+Do **not** enter exploration mode when:
+
+- A production system is down or critically impaired — use **Hotfix Workflow** instead.
+- A security vulnerability is actively exploitable — fix immediately, explore later.
+- A deadline is within the exploration time box (2 weeks) — you do not have time to learn.
+- The team has already committed to a scope — exploration becomes scope creep.
+
+Exploration is a **luxury of schedule**, not an emergency tool. If there is business pressure to ship, exploration is the wrong mode.
+
+## When You Must Switch to Execution
+
+Exploration is not a permanent state. You must switch to execution when:
+
+- All exit criteria are met (clear problem statement, sketched solution, known risks).
+- The time box expires — even if exit criteria are not met.
+- The Lessons Log stops producing new insights for 3 consecutive days.
+- A stakeholder commits budget or timeline to building the real thing.
+
+**No indefinite exploration.** If you have been exploring for more than 2 weeks without a decision to execute or abandon, you are not exploring — you are procrastinating.
+
 ## Exploration Mode Rules
 
 ### 1. Time-Boxed

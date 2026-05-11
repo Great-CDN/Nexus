@@ -119,6 +119,8 @@ Reload Frequency = (Sessions restarted due to context issues) / (Total sessions)
 
 **What it tells you**: Excessive dwell time in any phase indicates the scope is too large or the phase is not well-defined.
 
+**Note on scope**: These targets apply to a feature of typical scope (3-7 implementation tasks). A feature with significantly more tasks will scale proportionally; use the per-task Implementation target to estimate.
+
 **Collection**: Self-reported or derived from session timestamps.
 
 ---

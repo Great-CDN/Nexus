@@ -8,6 +8,8 @@ Nexus is an **engineering coordination layer** between humans, AI systems, and s
 
 It does not make AI smarter. It does not make AI deterministic. It structures the boundary where human judgment meets probabilistic generation.
 
+**Scope**: Nexus is designed for **single-author projects** where one human developer uses AI as a collaborative tool. Multi-team scenarios are outside the current design boundary; adapting Nexus to team settings requires additional protocols for ownership, review gates, and merge coordination that are not defined here.
+
 ## The Problem
 
 LLMs are probability distributions over text, conditioned on input and trained on human data. They have no memory, no understanding, and no ability to reason about code the way humans do. These are not bugs to fix — they are inherent properties of the technology.
@@ -141,7 +143,7 @@ Prefer:
 - Isolated tasks
 - Explicit boundaries
 
-**Implication**: If your context package exceeds 800 lines, the task is too large and should be split. 1200 lines is the absolute maximum before the model begins silently truncating context. If your module contract exceeds 150 lines, the module is too large. Split it. Small scope is not just a preference — it is a stability mechanism.
+**Implication**: If your context package exceeds 800 lines, the task is too large and should be split. 1200 lines is the absolute maximum for mixed code + prose. Pure prose documents can be larger — up to ~2000 lines — because prose has lower token density per line. See `docs/SCALE.md` for the full breakdown. If your module contract exceeds 150 lines, the module is too large. Split it. Small scope is not just a preference — it is a stability mechanism.
 
 ## Anti-Goals
 

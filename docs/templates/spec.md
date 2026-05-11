@@ -1,5 +1,8 @@
 # Spec: <Feature Name>
 
+**Version**: v1.0 (initial)
+**Last Updated**: YYYY-MM-DD
+
 ## Problem
 
 <One paragraph describing the problem this feature solves. Be specific about who has the problem and when.>
