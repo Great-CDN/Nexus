@@ -162,6 +162,7 @@ Save to `.claude/memory/` when:
 - You learn something about the user's preferences that affects future work.
 - You discover a project-level constraint not in the spec.
 - You establish a pattern that should be reused.
+- You identify a **systematic AI weakness** that recurs across tasks (see Known AI Weaknesses below).
 
 ### What NOT to Save
 
@@ -185,6 +186,40 @@ type: {{user | feedback | project | reference}}
 
 {{content}}
 ```
+
+### Known AI Weaknesses
+
+In addition to user preferences and project constraints, track **systematic failure patterns** observed in AI-generated output for this project. These are not one-off mistakes — they are recurring blind spots that will repeat unless explicitly guarded against.
+
+**When to record**:
+- The same category of error appears in **two or more tasks**.
+- Cross-validation reveals a consistent blind spot across multiple models.
+
+**Format** (extends the standard memory frontmatter):
+
+```markdown
+---
+name: {{short description of weakness}}
+description: {{one-line summary}}
+type: ai-weakness
+first-observed: {{YYYY-MM-DD}}
+tasks-affected: {{task IDs or count}}
+status: active | resolved
+---
+
+**Pattern**: What does AI systematically get wrong?
+
+**Example**: Paste a minimal example of the error.
+
+**Detection**: How do you verify this weakness is not present in new output?
+
+**Mitigation**: What constraint or reminder prevents it?
+```
+
+**Usage**:
+- Include the active weaknesses list in every context package under **Constraints**.
+- When a weakness has not been observed for 5 consecutive tasks, mark it `resolved` but keep the file for reference.
+- If a resolved weakness reappears, reactivate it and reset the counter.
 
 ### Memory Maintenance
 
@@ -417,6 +452,12 @@ The document must flow logically. A reader should never wonder "why am I reading
 - **Natural transitions.** The relationship between adjacent sections must be obvious. Use forward references sparingly and only when necessary.
 - **No logical gaps.** Do not jump from problem to solution without showing the reasoning chain. Do not list options without explaining how they were evaluated.
 
+**Operational verification** (apply these tests before marking the artifact complete):
+
+- **Redundancy test**: Remove any single paragraph. Does the document's purpose remain fully expressible? If yes, the paragraph is redundant — delete it or merge it.
+- **Transition test**: Read the last sentence of paragraph N and the first sentence of paragraph N+1. Is the logical relationship explicit (cause, contrast, elaboration, example)? If not, add a transitional sentence.
+- **Sequence test**: Extract the first sentence of every paragraph into a numbered list. Read the list in order. Does it form a complete reasoning chain from premise to conclusion? If not, reorder paragraphs or add bridging content.
+
 ### Quality Checklist (Universal)
 
 Before any artifact is marked complete, run this checklist:
@@ -425,6 +466,9 @@ Before any artifact is marked complete, run this checklist:
 - [ ] **Complete**: Five Ws derivable; boundaries stated; alternatives recorded; no orphaned references; open questions owned.
 - [ ] **Simple**: One idea per paragraph; tables for comparisons; no redundancy; within line limits; no decorative language.
 - [ ] **Explicit**: Abbreviations expanded; assumptions surfaced; decisions justified; numbers sourced; errors described in full.
-- [ ] **Coherent**: Logical flow from section to section; no orphaned arguments; transitions are natural.
+- [ ] **Coherent**: 
+  - [ ] Redundancy test passed (no paragraph can be deleted without loss).
+  - [ ] Transition test passed (every adjacent pair has explicit logical relationship).
+  - [ ] Sequence test passed (paragraph first-sentences form a complete reasoning chain).
 
 If any item fails, the artifact is incomplete. Revise and re-check.
