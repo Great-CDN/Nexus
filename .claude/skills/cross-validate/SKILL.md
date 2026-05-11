@@ -40,22 +40,50 @@ Which models should run the independent review?
 Recommended pairs: claude + gpt, or claude + gemini.
 ```
 
-### Step 3: Verify Environment
+### Step 3: Verify Environment (Security-Critical)
 
-Check that the required API keys are set before calling the tool:
+API keys are secrets. They must **never** be written into project files, committed to git, or pasted into the chat.
+
+Check if the required API keys are available. The script searches in this order:
+1. System environment variables
+2. `~/.nexus/cross-validate.env`
+3. `~/.config/nexus/cross-validate.env`
 
 ```bash
-echo $ANTHROPIC_API_KEY
-echo $OPENAI_API_KEY
-echo $GOOGLE_API_KEY
+node tools/cross-validate.js --help 2>&1 | head -1 || echo "Script exists"
+# Also verify env vars directly:
+env | grep -E 'ANTHROPIC_API_KEY|OPENAI_API_KEY|GOOGLE_API_KEY' | sed 's/=.*/=***/'
 ```
 
-If any required key is missing, stop and ask the user to set it:
+If any required key is missing, stop and guide the user to configure it **outside the project**:
 
 ```
-Error: OPENAI_API_KEY is not set. Please set it and re-run:
+API key for <model> is not configured. 
+
+Choose one of these secure options (both keep secrets out of git):
+
+Option 1 — Shell environment variables (recommended for daily use):
+  export ANTHROPIC_API_KEY=sk-ant-...
   export OPENAI_API_KEY=sk-...
+  export GOOGLE_API_KEY=...
+  # Add these to your shell profile (~/.bashrc, ~/.zshrc, or Windows system env)
+  # so they persist across terminal sessions.
+
+Option 2 — User-level env file:
+  mkdir -p ~/.nexus
+  cat > ~/.nexus/cross-validate.env <<'EOF'
+  ANTHROPIC_API_KEY=sk-ant-...
+  OPENAI_API_KEY=sk-...
+  GOOGLE_API_KEY=...
+  EOF
+  chmod 600 ~/.nexus/cross-validate.env
+
+Warning: Never create .env files inside this project directory.
+The project gitignore does not protect against accidental commits
+if the file is created in a subdirectory not covered by .gitignore.
 ```
+
+Wait for the user to confirm they have configured the keys before proceeding.
 
 ### Step 4: Run Cross-Validation
 

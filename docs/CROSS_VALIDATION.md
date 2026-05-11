@@ -303,11 +303,6 @@ Claude 会引导你完成：
 #### 方式二：直接运行脚本
 
 ```bash
-# 设置 API key
-export ANTHROPIC_API_KEY=sk-ant-...
-export OPENAI_API_KEY=sk-...
-export GOOGLE_API_KEY=...
-
 # 审查设计文档
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
 
@@ -322,6 +317,46 @@ node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
 - 不使用 Claude Code 的环境
 - CI/CD 流水线中的自动化审查
 - 批量处理多个文件
+
+### 安全配置（必读）
+
+API keys 是敏感凭据。**绝对禁止**将它们写入项目目录的任何文件或提交到 git。
+
+脚本支持两种安全的凭据加载方式：
+
+**方式 A：系统环境变量（推荐）**
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+export OPENAI_API_KEY=sk-...
+export GOOGLE_API_KEY=...
+```
+
+将上述命令加入你的 shell 配置文件（`~/.bashrc`、`~/.zshrc`、或 Windows 系统环境变量），使其持久化。环境变量不写入任何文件，最安全。
+
+**方式 B：用户级 env 文件**
+
+如果你不想修改 shell 配置，或需要为不同项目使用不同的 key：
+
+```bash
+mkdir -p ~/.nexus
+cat > ~/.nexus/cross-validate.env <<'EOF'
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+GOOGLE_API_KEY=...
+EOF
+chmod 600 ~/.nexus/cross-validate.env
+```
+
+脚本会自动搜索 `~/.nexus/cross-validate.env` 和 `~/.config/nexus/cross-validate.env`。
+
+**为什么不能在项目里放 `.env`？**
+
+-  `.gitignore` 可能不覆盖子目录中的 `.env`
+-  项目目录可能被复制、打包、分享
+-  一旦泄露，API key 可能被滥用产生高额费用
+
+如果脚本找不到凭据，它会输出明确的引导信息，告诉你去哪里配置。
 
 ### When to Use Automation
 

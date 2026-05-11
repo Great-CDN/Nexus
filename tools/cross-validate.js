@@ -19,6 +19,73 @@
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+
+// ---------------------------------------------------------------------------
+// Secure Credential Loading
+// ---------------------------------------------------------------------------
+
+/**
+ * Load API keys from a user-level env file.
+ * This keeps secrets out of project directories and git repos.
+ *
+ * Search order:
+ *   1. ~/.nexus/cross-validate.env
+ *   2. ~/.config/nexus/cross-validate.env
+ *
+ * File format (plain KEY=VALUE, one per line):
+ *   ANTHROPIC_API_KEY=sk-ant-...
+ *   OPENAI_API_KEY=sk-...
+ *   GOOGLE_API_KEY=...
+ *
+ * Lines starting with # are ignored.
+ */
+function loadUserEnvFile() {
+  const candidates = [
+    path.join(os.homedir(), '.nexus', 'cross-validate.env'),
+    path.join(os.homedir(), '.config', 'nexus', 'cross-validate.env'),
+  ];
+
+  for (const filePath of candidates) {
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      for (const line of content.split(/\r?\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+        const eq = trimmed.indexOf('=');
+        if (eq === -1) continue;
+        const key = trimmed.slice(0, eq).trim();
+        const value = trimmed.slice(eq + 1).trim();
+        if (key && value && process.env[key] === undefined) {
+          process.env[key] = value;
+        }
+      }
+      return filePath;
+    }
+  }
+  return null;
+}
+
+function showCredentialHelp(missingKeys) {
+  console.error(`\nError: Missing API key(s): ${missingKeys.join(', ')}\n`);
+  console.error('Cross-validation requires API keys, but they must NOT be stored in this project.\n');
+  console.error('Option 1 — Environment variables (recommended):');
+  console.error('  export ANTHROPIC_API_KEY=sk-ant-...');
+  console.error('  export OPENAI_API_KEY=sk-...');
+  console.error('  export GOOGLE_API_KEY=...');
+  console.error('  # Then run this script again.\n');
+  console.error('Option 2 — User-level env file:');
+  console.error('  Create one of these files (outside any git repo):');
+  console.error('    ~/.nexus/cross-validate.env');
+  console.error('    ~/.config/nexus/cross-validate.env');
+  console.error('  Contents:');
+  console.error('    ANTHROPIC_API_KEY=sk-ant-...');
+  console.error('    OPENAI_API_KEY=sk-...');
+  console.error('    GOOGLE_API_KEY=...');
+  console.error('  # Then run this script again.\n');
+  console.error('Security note: Never commit API keys. Both options keep secrets');
+  console.error('outside project directories.\n');
+}
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -251,10 +318,14 @@ async function main() {
     process.exit(1);
   }
 
+  // Load credentials from user-level env file (fallback to system env vars)
+  const loadedFrom = loadUserEnvFile();
+
   const fileContent = fs.readFileSync(args.file, 'utf-8');
 
   // Validate requested models and API keys
   const tasks = [];
+  const missingKeys = [];
   for (const model of args.models) {
     const provider = PROVIDERS[model];
     if (!provider) {
@@ -263,10 +334,15 @@ async function main() {
     }
     const apiKey = process.env[provider.envKey];
     if (!apiKey) {
-      console.error(`Error: ${provider.envKey} is not set. Required for --models ${model}`);
-      process.exit(1);
+      missingKeys.push(provider.envKey);
+    } else {
+      tasks.push(reviewWithProvider(model, fileContent, apiKey));
     }
-    tasks.push(reviewWithProvider(model, fileContent, apiKey));
+  }
+
+  if (missingKeys.length > 0) {
+    showCredentialHelp(missingKeys);
+    process.exit(1);
   }
 
   console.log(`Cross-validating ${args.file} with ${args.models.join(', ')}...`);
