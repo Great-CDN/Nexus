@@ -12,7 +12,7 @@ The context window is approximately 200K tokens. In practice, this means:
 - **~1000-2000 lines of prose** (specs, designs, comments) — prose has lower token density per line
 - **Combined code + prose**: if your spec + design + relevant code exceeds 800 lines, you are near the danger zone. 1200 lines is the absolute maximum for mixed content.
 
-**Note**: The 800/1200 limits apply to mixed content (code + prose combined). Pure prose documents (e.g., a spec with no code) can be larger — up to ~2000 lines — because prose has lower token density. When in doubt, count tokens, not lines.
+**Note**: The 800/1200 limits apply to mixed content (code + prose combined). Pure prose documents (e.g., a spec with no code) can be larger — up to ~2000 lines — because prose has lower token density. When in doubt, count tokens, not lines. Use `node tools/count-tokens.js <file>` for a rough estimate.
 
 **When the context window truncates, AI silently loses information.** It does not tell you. It just starts making worse decisions.
 

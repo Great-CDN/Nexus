@@ -12,7 +12,7 @@ Run this before approving a `PRODUCT_SPEC.md`.
 - [ ] Scope is bounded with specific inclusions.
 - [ ] Non-goals are explicit and specific.
 - [ ] Acceptance criteria are verifiable (each answers "how do we know this is done?").
-- [ ] No acceptance criterion uses vague words ("good", "fast", "user-friendly", "robust").
+- [ ] No acceptance criterion uses vague words or patterns ("good", "fast", "user-friendly", "robust", "should", "could", "may", "etc.", "and/or", "various", "some", "as appropriate").
 - [ ] Assumptions are listed.
 - [ ] Dependencies are identified.
 - [ ] Open questions are listed and have owners.
@@ -51,7 +51,7 @@ Run this for every completed task.
 - [ ] Tests pass.
 - [ ] No unused variables, imports, or dead code.
 - [ ] No console.log or debug code left in production code.
-- [ ] Human has traced the primary execution path and primary error path (limit: 200 lines per review session; if larger, review in chunks).
+- [ ] Human has traced the primary execution path and primary error path (limit: 200 lines or 30 minutes per review chunk, whichever comes first; if larger, review in chunks).
 - [ ] Commit follows Conventional Commits format and references the task.
 
 ---

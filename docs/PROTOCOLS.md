@@ -48,7 +48,7 @@ When starting a session for a task, provide:
 ### Context Loading Rules
 
 - **Paste, do not reference by name**. Saying "use the same pattern as UserService" is insufficient. Paste the relevant code.
-- **Keep it under 800 lines ideally, 1200 lines absolutely**. If context exceeds 800 lines, you are in the warning zone — the task should probably be split. If it exceeds 1200 lines, it must be split. These numbers are heuristics based on typical token density, not hard limits.
+- **Keep it under 800 lines ideally, 1200 lines absolutely**. If context exceeds 800 lines, you are in the warning zone — the task should probably be split. If it exceeds 1200 lines, it must be split. These numbers are heuristics based on typical token density, not hard limits. For a rough token estimate, run `node tools/count-tokens.js <file>`.
 - **Repeat critical constraints**. If a constraint matters, state it explicitly even if it is in the spec.
 - **End context with the instruction**. The last thing AI reads should be what to do.
 
@@ -253,6 +253,19 @@ Types:
 4. **No WIP commits in main**. Feature branches can have WIP commits, but squash or clean before merge.
 5. **Commit after every task**. Small commits are cheap. Large rollbacks are expensive.
 
+### Signed Commits (Recommended)
+
+Git history is the audit trail. Unsigned commits can be forged. For Acceptance-phase merges to `main`, use GPG or SSH commit signing.
+
+```bash
+# Enable SSH signing (simpler than GPG)
+git config --global user.signingkey ~/.ssh/id_ed25519.pub
+git config --global gpg.format ssh
+git config --global commit.gpgsign true
+```
+
+This is optional for feature branches and Light Workflow changes, but mandatory for anything that touches security-critical code.
+
 ---
 
 ## Session Protocol
@@ -279,6 +292,14 @@ Do not repeat the context packaging rules here — they are defined in the Conte
 1. Human commits the change.
 2. Update task tracking (mark task complete).
 3. If scope discovered to be wrong, note it for spec revision — do not change course mid-session.
+
+### Session Interruption
+
+Sessions do not always complete normally. Define the abort path:
+
+1. **Human must leave mid-session**: Save the current AI output (even if incomplete) to a scratch file. Note the stopping point in the task tracker. Resume from that point in a new session with a fresh context reload — do not attempt to continue from conversation memory.
+2. **Connection drops or tool failure**: If an AI tool call fails (network error, API timeout), do not retry blindly. Verify the last successful state from git or the snapshot, then resume from there.
+3. **Power failure or crash**: This is why frequent commits matter. The maximum uncommitted work at risk is one task. After recovery, check git status, review the diff, and decide whether to continue or restart.
 
 ### Session Length
 
@@ -317,7 +338,7 @@ Use for: small enhancements, UI tweaks, adding a field to a form, routine depend
 
 Use for: production bugs, security patches, critical broken functionality.
 
-- **Requirements**: Bug report is the requirement. No spec template.
+- **Requirements**: Bug report is the requirement. Minimum contents: (1) exact reproduction steps, (2) expected vs. actual behavior, (3) affected scope / users, (4) regression risks. No formal spec template required for trivial fixes; use `docs/templates/spec-light.md` if the fix touches non-obvious logic.
 - **Design**: Skip if the fix is obvious; one-sentence design if not.
 - **Implementation**: One task, one session. Get in, fix, get out.
 - **Testing**: Reproduce the bug, apply fix, verify fix, check for regressions. Run the full test suite if possible.
@@ -340,7 +361,7 @@ If any row points to Full, use Full. If the change is a production incident, use
 
 - **Using Full for everything**: A button color change does not need a spec and design doc. This creates process fatigue.
 - **Using Hotfix for features**: "I'll just call it a hotfix to skip the spec" — no. Hotfix is for broken production code, not for new work.
-- **Skipping Testing on Light**: Even light workflow requires verification. The only thing that shrinks is documentation, not validation.
+- **Skipping Testing on Light Workflow**: Even Light Workflow requires verification. The only thing that shrinks is documentation, not validation.
 - **Snapshots for trivial changes**: If a change is one line and obviously correct, a snapshot is bureaucracy. The commit message is the audit trail.
 
 ---
@@ -375,7 +396,7 @@ The document must be as short as possible without sacrificing completeness. Comp
 - **One idea per paragraph.** If a paragraph contains multiple decisions, split it.
 - **Tables over paragraphs.** Comparative data (tradeoffs, options, test cases) belongs in tables. Tables compress information and reduce parsing ambiguity.
 - **No redundant restatements.** Do not repeat what is already in the spec in the design, or what is in the design in the task. Reference; do not duplicate.
-- **Line limits.** Specs and designs must not exceed 800 lines. If they do, the scope is too large and must be split. This aligns with the Small Context rule.
+- **Line limits.** Mixed-content artifacts (code + prose) must not exceed 800 lines. Pure prose documents may reach ~2000 lines because prose has lower token density. If an artifact exceeds its limit, the scope is too large and must be split. See `docs/SCALE.md` for the full context-window rationale.
 - **No decorative language.** "Elegantly handles", "seamlessly integrates", "robustly manages" add zero information. Remove them.
 
 ### 4. Explicit（显式）
@@ -388,13 +409,22 @@ The document must be as short as possible without sacrificing completeness. Comp
 - **Every number has a source.** "Supports 10,000 users" must state whether this is tested, estimated, or required.
 - **Error cases are first-class.** Do not describe the happy path and append "errors are handled gracefully." Describe the error path with the same detail as the success path.
 
+### 5. Coherent（连贯）
+
+The document must flow logically. A reader should never wonder "why am I reading this now?" or "how did we get here?"
+
+- **One arc per document.** Every section serves the document's single purpose. If a section does not advance the reader's understanding of that purpose, remove it.
+- **Natural transitions.** The relationship between adjacent sections must be obvious. Use forward references sparingly and only when necessary.
+- **No logical gaps.** Do not jump from problem to solution without showing the reasoning chain. Do not list options without explaining how they were evaluated.
+
 ### Quality Checklist (Universal)
 
 Before any artifact is marked complete, run this checklist:
 
 - [ ] **Accurate**: No vague qualifiers; named references are exact; assumptions are falsifiable; metrics have units.
 - [ ] **Complete**: Five Ws derivable; boundaries stated; alternatives recorded; no orphaned references; open questions owned.
-- [ ] **Simple**: One idea per paragraph; tables for comparisons; no redundancy; under 800 lines; no decorative language.
+- [ ] **Simple**: One idea per paragraph; tables for comparisons; no redundancy; within line limits; no decorative language.
 - [ ] **Explicit**: Abbreviations expanded; assumptions surfaced; decisions justified; numbers sourced; errors described in full.
+- [ ] **Coherent**: Logical flow from section to section; no orphaned arguments; transitions are natural.
 
 If any item fails, the artifact is incomplete. Revise and re-check.

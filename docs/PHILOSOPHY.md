@@ -166,8 +166,8 @@ Do not use Nexus for:
 - **One-off scripts** (< 50 lines, single use, disposable)
 - **Personal learning projects** (the goal is learning, not maintainability)
 - **Pure exploration** (see `docs/EXPLORATION.md` — exploration ends before Nexus begins)
-- **Emergency hotfixes** (use Hotfix workflow, not Full workflow)
-- **Dependency updates** (use Light workflow, or just update and test)
+- **Emergency hotfixes** (use Hotfix Workflow, not Full Workflow)
+- **Dependency updates** (use Light Workflow, or just update and test)
 - **Code that will never be read again** (prototypes, throwaway demos)
 
 Nexus is for **code that must be correct and maintainable**. If neither matters, skip the process.
@@ -186,10 +186,10 @@ These feelings are valid. The process does not eliminate them; it manages them.
 
 ### Managing Fatigue
 
-- **Use Light workflow for 70% of your work.** Full workflow is for novel, complex, or risky changes. Most day-to-day work is Light.
-- **Batch small tasks.** Three Light workflow tasks in one day feel less burdensome than one Full workflow task.
+- **Use Light Workflow for 70% of your work.** Full Workflow is for novel, complex, or risky changes. Most day-to-day work is Light.
+- **Batch small tasks.** Three Light Workflow tasks in one day feel less burdensome than one Full Workflow task.
 - **Take breaks between sessions.** Do not chain 3-hour implementation marathons. Your review quality will collapse.
-- **If you feel the process is suffocating, check your Triage.** You are probably using Full workflow for things that should be Light.
+- **If you feel the process is suffocating, check your Triage.** You are probably using Full Workflow for things that should be Light.
 
 ### The Creative Compromise
 

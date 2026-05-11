@@ -99,7 +99,7 @@ Use one model to attack another model's design.
 2. Model B is assigned an **adversarial role**: find every flaw, edge case, security hole, and inconsistency in A's Design.
 3. Model A fixes the identified issues.
 4. Model B re-attacks the fixed Design.
-5. Repeat until B finds no new critical issues or the human declares the risk acceptable.
+5. Repeat for a maximum of **3 rounds**. If Model B still finds critical issues after 3 rounds, the design is structurally flawed — return to the Requirements phase and re-examine the problem definition.
 
 **Example:**
 ```

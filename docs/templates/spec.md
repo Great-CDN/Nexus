@@ -65,3 +65,4 @@ Run `CHECKLIST: Artifact Quality` from `docs/CHECKLISTS.md` first. Then verify t
 - [ ] **Complete**: Every in-scope item has a corresponding acceptance criterion; nothing is implied.
 - [ ] **Complete**: Open questions have owners, due dates, and resolution status; no orphaned questions remain.
 - [ ] **Explicit**: Non-goals explicitly state not just what is excluded, but why it is excluded.
+- [ ] **Coherent**: Sections flow in logical order (Problem → Scope → Non-Goals → ACs). A reader never wonders why a section appears where it does.

@@ -53,6 +53,7 @@ sessions/
 - **One snapshot per session**. Do not combine multiple sessions into one snapshot.
 - **Snapshots are append-only**. Once recorded, a snapshot is never modified. If you revisit a phase, create a new snapshot with an incremented version (e.g., `spec-v2.md`).
 - **Verdict is mandatory**. Every snapshot ends with a written verdict: approved, rejected, or approved with notes.
+- **Retention policy**. Archive or delete sessions older than 3 months. For long-running projects, consider referencing committed spec/design versions by git hash instead of physical copies once a feature is accepted.
 
 ### 2. Environment Locking
 

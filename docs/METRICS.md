@@ -28,7 +28,7 @@ Total Rework Rate       = Upstream + Implementation
 - High *Upstream* Rework means the spec or design was unclear before implementation started. Fix the Requirements or Design phase.
 - High *Implementation* Rework means the coding process is unstable. Fix the context packaging or task sizing.
 
-**Collection**: Count from review verdicts in session snapshots.
+**Collection**: Count from review verdicts in session snapshots. Light Workflow tasks are excluded from this metric because snapshots are optional for Light Workflow.
 
 ---
 
@@ -137,6 +137,8 @@ Cognitive Load Ratio = (Human active time) / (Total session time) * 100%
 
 **Collection**: Estimate per session. Human active time = reading + reviewing + deciding + writing context.
 
+**Note on review limits**: The Implementation checklist limits review to 200 lines or 30 minutes per chunk, whichever comes first. For sessions approaching the 120-minute maximum, split large reviews across multiple sessions to keep Cognitive Load Ratio within target.
+
 ## Measurement Cadence
 
 | Metric | When to Review |
@@ -195,7 +197,7 @@ This is your baseline. Do not skip this. Without a baseline, you cannot know if 
 | Are you using Triage correctly? | 70% Light, 20% Full, 10% Hotfix | You are using Full for everything. Review Triage Protocol. |
 | Are specs being written before code? | > 80% of features | You are still chatting your way to solutions. Enforce Spec > Prompt. |
 | Are automated checks running? | > 90% of commits | Set up CI or pre-commit hooks. |
-| How does process overhead feel? | Manageable (not suffocating) | You are using Full workflow too often. Switch more tasks to Light. |
+| How does process overhead feel? | Manageable (not suffocating) | You are using Full Workflow too often. Switch more tasks to Light Workflow. |
 
 #### Month 3: Effectiveness Check
 
@@ -217,7 +219,7 @@ At 6 months, Nexus should feel natural, not forced:
 - You write specs without being reminded.
 - You catch yourself before starting a new task without context.
 - Your rework rate is stable and predictable.
-- You know when to use Light vs. Full workflow instinctively.
+- You know when to use Light Workflow vs. Full Workflow instinctively.
 
 If Nexus still feels like a burden at Month 6, either:
 1. The project is fundamentally unsuited to Nexus (too small, too experimental), or

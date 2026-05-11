@@ -6,6 +6,9 @@
  * Reads a local artifact file, sends it to multiple LLM APIs in parallel
  * with isolated review prompts, and generates a structured Markdown report.
  *
+ * Tested providers: claude, gpt, gemini, deepseek, kimi, nim.
+ * Each provider uses its native API schema; the script handles the mapping.
+ *
  * Usage:
  *   node tools/cross-validate.js <file> --models claude,gpt
  *   node tools/cross-validate.js <file> --models claude,gpt,gemini --out reports/
@@ -15,6 +18,8 @@
  *   OPENAI_API_KEY     - Required for --models gpt
  *   GOOGLE_API_KEY     - Required for --models gemini
  *   DEEPSEEK_API_KEY   - Required for --models deepseek
+ *   KIMI_API_KEY       - Required for --models kimi
+ *   NVIDIA_API_KEY     - Required for --models nim
  */
 
 const https = require('https');
@@ -286,7 +291,7 @@ function postJSON(host, pathOrFn, headers, payload) {
         ...headers,
         'Content-Length': Buffer.byteLength(postData),
       },
-      timeout: 120000,
+      timeout: 300000,
     };
 
     const req = https.request(options, (res) => {
