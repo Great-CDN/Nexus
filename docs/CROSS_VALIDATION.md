@@ -372,9 +372,12 @@ chmod 600 ~/.nexus/cross-validate.env
 If you do not have API keys or prefer not to use the script:
 
 1. Generate in Claude Code.
-2. Copy the artifact to ChatGPT / Gemini in a fresh browser tab.
-3. Use the neutral prompt from Step 3 above.
-4. Paste both reviews into `docs/templates/review.md` and compare manually.
+2. **Strip all generation metadata** from the artifact before copying. Remove any context that reveals the artifact was AI-generated (e.g., "Claude suggested...", "AI-generated design..."). Isolation depends on the reviewer not knowing the source.
+3. Copy the artifact to ChatGPT / Gemini / DeepSeek in a **fresh browser tab** with no conversation history.
+4. Use the neutral prompt from Step 3 above.
+5. Paste both reviews into `docs/templates/review.md` and compare manually.
+
+**Warning**: If you paste the artifact with attribution ("I wrote this with Claude"), the reviewer's bias is introduced and the cross-validation is invalid.
 
 ---
 

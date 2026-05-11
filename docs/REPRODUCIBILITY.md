@@ -43,6 +43,8 @@ sessions/
       task-T1.md
       diff.patch
       verdict.md
+      # For multi-task implementation, subdirectories per task (T1/, T2/)
+      # are acceptable to keep snapshots organized.
 ```
 
 #### Snapshot Rules
@@ -72,7 +74,7 @@ Record these in the session's `context.md` under an `Environment` section.
 
 - **Model updates are opaque**. Anthropic may update a model without changing its name. You cannot lock this.
 - **Temperature is usually not exposed**. Claude Code does not typically let you set temperature.
-- **Context window truncation is invisible**. When context exceeds the limit, the model silently truncates. This is why the "under 2000 lines" rule exists — it is a heuristic, not a guarantee.
+- **Context window truncation is invisible**. When context exceeds the limit, the model silently truncates. This is why the "under 1200 lines absolute maximum" rule exists — it is a heuristic aligned with the Context Packaging Protocol, not a guarantee. See `docs/PROTOCOLS.md` §Context Packaging Protocol for the exact thresholds.
 
 **Implication**: Reproducibility is *probabilistic*, not *deterministic*. The goal is to maximize the probability of consistent output, not to guarantee it.
 

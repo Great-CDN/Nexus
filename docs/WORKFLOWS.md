@@ -145,9 +145,9 @@ Do not mark a task complete until:
 
 ### When AI Cannot Implement the Task
 
-If the task is in the Red Zone (see `docs/CAPABILITY.md`) or AI fails twice with structurally incorrect output:
+If the task triggers the Fallback Rule (see `docs/CAPABILITY.md` §The Fallback Rule for complete conditions):
 
-1. **Invoke the Fallback Rule.** Stop the AI implementation session.
+1. **Stop the AI implementation session.**
 2. **Switch to human implementation.** Write the code yourself.
 3. **Re-assess remaining tasks.** If most tasks are Red Zone, the entire feature should be human-led with AI in a supporting role.
 4. **Use AI for sub-tasks only.** After human writes the architecture, AI can implement individual functions, write tests, or generate documentation.
@@ -237,6 +237,8 @@ Do not deploy until:
 - [ ] All acceptance criteria are verified.
 - [ ] No critical technical debt introduced.
 - [ ] Human makes explicit go decision.
+
+**Definition**: "Deploy" in this workflow means **merge to the main branch**. Production release is a separate operational concern outside this workflow.
 
 ### AI Role
 - Review the implementation against spec and design.

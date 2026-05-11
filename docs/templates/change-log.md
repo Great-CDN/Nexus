@@ -44,11 +44,10 @@
 
 ## Quality Checklist
 
-Run this before finalizing the change log entry.
+Run `CHECKLIST: Artifact Quality` from `docs/CHECKLISTS.md` first. Then verify these template-specific items:
 
 - [ ] **Accurate**: Reference includes exact issue number, spec path, or commit hash; no "see above" or "recent commit".
 - [ ] **Accurate**: Impact section states what could break, not just what changed.
-- [ ] **Complete**: Summary answers what changed in one sentence; details answer why and how.
 - [ ] **Complete**: Verification checkboxes are checked only after the verification is actually performed.
 - [ ] **Simple**: Details section contains only what changed; context and background belong in the spec or issue.
 - [ ] **Explicit**: Type is one of the allowed categories (Bug fix / Feature addition / Refactor / Documentation update / Dependency update).

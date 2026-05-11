@@ -192,6 +192,32 @@ type: {{user | feedback | project | reference}}
 - Review memory monthly. Delete stale entries.
 - If memory contradicts a spec, the spec wins. Update memory.
 - Memory is a hint, not a rule. Always verify against current state.
+- **Atomic writes**: Each memory entry is one file. Do not append to a shared file. If two sessions write simultaneously, the last write wins. Use descriptive filenames to avoid collisions (e.g., `user_prefers_tabs.md` not `memory_01.md`).
+
+---
+
+## Definitions
+
+Shared terms used across Nexus documents.
+
+### Severity Levels
+
+Used in reviews, bug tracking, and risk assessment:
+
+| Level | Definition | Example |
+|-------|-----------|---------|
+| **Critical** | Blocks acceptance or deployment. No workaround. | Security vulnerability, data loss bug |
+| **High** | Significant risk or effort required. Has workaround but painful. | Performance regression, missing error handling |
+| **Medium** | Noticeable issue, manageable workaround. | UI inconsistency, unclear error message |
+| **Low** | Cosmetic, negligible impact, or preference. | Typo, formatting inconsistency |
+
+### Branch Naming
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Feature | `feature/<short-name>` | `feature/rule-editor` |
+| Exploration | `exploration/<YYYY-MM-DD>-<topic>` | `exploration/2026-05-11-dnd-kit` |
+| Hotfix | `hotfix/<issue-id-or-description>` | `hotfix/auth-token-leak` |
 
 ---
 

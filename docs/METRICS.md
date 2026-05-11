@@ -18,7 +18,7 @@ Rework Rate = (Tasks with Request Changes verdict) / (Total tasks implemented) *
 
 **Target**: < 20%
 
-**Source**: Empirical heuristic based on industry code review data. Single-author AI-assisted projects may deviate significantly.
+**Source**: Empirical heuristic based on industry code review data (Google CR Research 2018 reports ~15-25% rework rates for teams with mandatory review). Single-author AI-assisted projects may deviate significantly — treat 20% as a starting point and adjust based on your project's data.
 
 **What it tells you**: High rework means the spec or design was unclear before implementation started. Fix the upstream phase, not the implementation.
 

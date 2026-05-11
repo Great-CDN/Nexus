@@ -68,6 +68,7 @@ Run this before proceeding to Acceptance.
 - [ ] Test coverage is documented (percentage is noted, not mandated).
 - [ ] Bug list is compiled with severity (Critical / High / Medium / Low).
 - [ ] No Critical or High bugs remain.
+- [ ] Every acceptance criterion has a documented verification method in the test plan or traceability matrix.
 - [ ] Human has performed manual verification.
 
 ---

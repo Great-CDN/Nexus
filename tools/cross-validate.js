@@ -14,6 +14,7 @@
  *   ANTHROPIC_API_KEY  - Required for --models claude
  *   OPENAI_API_KEY     - Required for --models gpt
  *   GOOGLE_API_KEY     - Required for --models gemini
+ *   DEEPSEEK_API_KEY   - Required for --models deepseek
  */
 
 const https = require('https');
@@ -73,6 +74,7 @@ function showCredentialHelp(missingKeys) {
   console.error('  export ANTHROPIC_API_KEY=sk-ant-...');
   console.error('  export OPENAI_API_KEY=sk-...');
   console.error('  export GOOGLE_API_KEY=...');
+  console.error('  export DEEPSEEK_API_KEY=sk-...');
   console.error('  # Then run this script again.\n');
   console.error('Option 2 — User-level env file:');
   console.error('  Create one of these files (outside any git repo):');
@@ -82,6 +84,7 @@ function showCredentialHelp(missingKeys) {
   console.error('    ANTHROPIC_API_KEY=sk-ant-...');
   console.error('    OPENAI_API_KEY=sk-...');
   console.error('    GOOGLE_API_KEY=...');
+  console.error('    DEEPSEEK_API_KEY=sk-...');
   console.error('  # Then run this script again.\n');
   console.error('Security note: Never commit API keys. Both options keep secrets');
   console.error('outside project directories.\n');
@@ -147,6 +150,27 @@ const PROVIDERS = {
     parseResponse: (body) => body.candidates?.[0]?.content?.parts?.[0]?.text || '(no response)',
     buildHeaders: () => ({ 'Content-Type': 'application/json' }),
   },
+  deepseek: {
+    name: 'DeepSeek',
+    host: 'api.deepseek.com',
+    path: '/chat/completions',
+    envKey: 'DEEPSEEK_API_KEY',
+    model: 'deepseek-chat',
+    maxTokens: 4096,
+    buildRequest: (apiKey, content) => ({
+      model: PROVIDERS.deepseek.model,
+      max_tokens: PROVIDERS.deepseek.maxTokens,
+      messages: [
+        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
+        { role: 'user', content: content },
+      ],
+    }),
+    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
+    buildHeaders: (apiKey) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    }),
+  },
 };
 
 const REVIEW_SYSTEM_PROMPT = `You are an experienced senior software engineer conducting a technical review.
@@ -185,13 +209,15 @@ function showUsage() {
   console.log(`Usage: node tools/cross-validate.js <file> --models <model1,model2> [--out <dir>]
 
 Models:
-  claude  - Anthropic Claude (requires ANTHROPIC_API_KEY)
-  gpt     - OpenAI GPT (requires OPENAI_API_KEY)
-  gemini  - Google Gemini (requires GOOGLE_API_KEY)
+  claude   - Anthropic Claude (requires ANTHROPIC_API_KEY)
+  gpt      - OpenAI GPT (requires OPENAI_API_KEY)
+  gemini   - Google Gemini (requires GOOGLE_API_KEY)
+  deepseek - DeepSeek (requires DEEPSEEK_API_KEY)
 
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
-  node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/`);
+  node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek`);
 }
 
 // ---------------------------------------------------------------------------
@@ -329,7 +355,7 @@ async function main() {
   for (const model of args.models) {
     const provider = PROVIDERS[model];
     if (!provider) {
-      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini`);
+      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek`);
       process.exit(1);
     }
     const apiKey = process.env[provider.envKey];

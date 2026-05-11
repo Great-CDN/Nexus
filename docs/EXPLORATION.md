@@ -32,6 +32,7 @@ If you can write a clear problem statement and know roughly what the solution lo
 
 Exploration has a hard deadline. Default: **2 weeks maximum**.
 
+- 1-3 days for very small explorations (single API endpoint, one UI screen, one library evaluation).
 - 1 week for small prototypes (single feature, single screen).
 - 2 weeks for complex prototypes (multi-step flows, new architecture).
 

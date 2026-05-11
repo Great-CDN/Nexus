@@ -125,6 +125,7 @@ What would you like to do?
 
 - **Never skip the environment check.** Calling the tool with a missing API key wastes time.
 - **Never attribute the artifact to AI in the summary.** The report is already anonymized by the tool; do not undo that.
+- **When guiding manual fallback, explicitly warn the user to strip generation metadata.** Isolation is broken if the reviewer knows the artifact was AI-generated.
 - **Never decide for the human.** The skill summarizes; the human integrates and decides.
 - **One artifact per run.** If the user wants to validate multiple files, run sequentially, not in parallel.
 - **Preserve the raw report.** Always reference the generated report file path so the user can read the full text.
