@@ -32,6 +32,7 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 | `docs/METRICS.md` | When evaluating whether the process is effective |
 | `docs/WORKED_EXAMPLE.md` | When learning how the workflow applies to a real feature |
 | `docs/CROSS_VALIDATION.md` | When using multiple models for independent review |
+| `docs/templates/feature-roadmap.md` | When decomposing a large initiative into prioritized features |
 | `docs/templates/spec.md` | When creating a new product spec (full) |
 | `docs/templates/spec-light.md` | When creating a quick spec (light workflow) |
 | `docs/templates/design.md` | When creating a new design doc (full) |
@@ -43,6 +44,8 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 | `tools/cross-validate.js` | When running multi-model cross-validation |
 
 ## How to Use This Context
+
+**For new users**: Direct them to `docs/QUICKSTART.md` first.
 
 When the user starts a session:
 1. Ask what phase we are in (Requirements, Design, Implementation, Testing, Acceptance, Maintenance).
@@ -69,14 +72,16 @@ Nexus/
     WORKFLOWS.md
     PROTOCOLS.md
     CHECKLISTS.md
+    BOUNDARY_CONDITIONS.md
+    CAPABILITY.md
     REPRODUCIBILITY.md
     SCALE.md
     METRICS.md
     WORKED_EXAMPLE.md
     CROSS_VALIDATION.md
+    EXPLORATION.md
     templates/
-  tools/
-    cross-validate.js      # Multi-model cross-validation script
+      feature-roadmap.md
       spec.md
       spec-light.md
       design.md
@@ -85,11 +90,17 @@ Nexus/
       review.md
       test-plan.md
       change-log.md
+  tools/
+    cross-validate.js      # Multi-model cross-validation script
+    count-tokens.js        # Rough token counter for context sizing
   .claude/
     settings.json
     settings.local.json
+    memory/               # Persistent memory files
     skills/
       init-spec/
+        SKILL.md
+      init-design/
         SKILL.md
       review-code/
         SKILL.md

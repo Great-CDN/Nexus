@@ -1,10 +1,12 @@
-# Reproducibility
+# Reproducibility and Traceability
 
-Nexus aims to make AI collaboration reproducible — meaning the same inputs, fed to the same system, should produce the same outputs regardless of when or by whom the work is done. This document defines the mechanisms that make that possible.
+Nexus aims to make AI collaboration **traceable** — meaning every decision, input, and output can be audited and replayed from documents, regardless of when or by whom the work was done. This document defines the mechanisms that make that possible.
 
-## What Reproducibility Means Here
+> **Terminology note**: `docs/BOUNDARY_CONDITIONS.md` §1 establishes that true deterministic reproducibility (identical tokens on replay) is impossible with LLMs. What this document describes is **traceability** — a complete audit trail that lets anyone reconstruct what happened and why. We retain "Reproducibility" in the filename and some headings for discoverability, but the operational concept is traceability.
 
-Reproducibility in Nexus does not mean "AI produces identical token sequences every time." That is impossible with current language models. It means:
+## What Traceability Means Here
+
+Traceability in Nexus does not mean "AI produces identical token sequences every time." That is impossible with current language models. It means:
 
 1. **Deterministic inputs**: The human-AI context package is complete and unambiguous.
 2. **Locked environment**: The model and parameters are known and recorded.
@@ -57,7 +59,7 @@ sessions/
 
 ### 2. Environment Locking
 
-The AI model and its parameters are part of the reproducibility environment. Record them.
+The AI model and its parameters are part of the traceability environment. Record them.
 
 #### What to Record
 
@@ -108,7 +110,7 @@ Before starting any session, run this check:
 - [ ] Constraints are listed explicitly.
 - [ ] The single instruction is the last item in the context.
 
-If any item is missing, the session is not reproducible. Do not proceed.
+If any item is missing, the session is not traceable. Do not proceed.
 
 ## Practical Workflow
 
@@ -124,7 +126,7 @@ If any item is missing, the session is not reproducible. Do not proceed.
 
 1. Retroactively create snapshots for the current state: copy the current spec/design into `sessions/YYYY-MM-DD-initial/`.
 2. Going forward, create per-session snapshots.
-3. Do not try to retroactively snapshot past work — the value is in future reproducibility.
+3. Do not try to retroactively snapshot past work — the value is in future traceability.
 
 ## Tradeoffs
 

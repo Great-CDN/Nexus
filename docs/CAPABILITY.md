@@ -20,7 +20,7 @@ This document defines a capability matrix and fallback rules for deciding when t
 | **Novel algorithm design** | Low | Human leads, AI assists with implementation details |
 | **Security-critical logic** | Low | Human leads, AI only generates boilerplate |
 | **Complex debugging** (race conditions, memory leaks) | Low | Human leads, AI assists with information gathering |
-| **Architecture decisions** (microservices vs monolith) | Low | Human leads, AI does not provide recommendations |
+| **Architecture decisions** (microservices vs monolith) | Low | Human leads, AI proposes options and tradeoffs |
 | **Performance optimization** (database query tuning) | Low | Human leads, AI assists with rewrites |
 | **Cross-system integration** (multiple unfamiliar services) | Low | Human leads, AI assists per module |
 

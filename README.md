@@ -8,6 +8,8 @@ It is not an AI agent framework, not a prompt collection, and not an autonomous 
 
 ## How to Use
 
+**New to Nexus?** Start with [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — get from zero to your first session in 5 minutes.
+
 1. Read `docs/PHILOSOPHY.md` to understand the rules.
 2. Read `docs/WORKFLOWS.md` to understand the lifecycle.
 3. When starting a new feature, use `docs/templates/spec.md`.
@@ -30,6 +32,7 @@ It is not an AI agent framework, not a prompt collection, and not an autonomous 
 | `docs/WORKED_EXAMPLE.md` | End-to-end walkthrough using a real feature |
 | `docs/CROSS_VALIDATION.md` | Using multiple AI models to validate critical decisions |
 | `docs/templates/` | Reusable document templates (full + light) |
+| `docs/reviews/` | Historical cross-validation reports (snapshots, not normative rules) |
 | `CLAUDE.md` | Claude Code project context |
 
 ## Tools
@@ -37,6 +40,7 @@ It is not an AI agent framework, not a prompt collection, and not an autonomous 
 | Tool | Purpose |
 |------|---------|
 | `tools/cross-validate.js` | Multi-model cross-validation script. Zero dependencies. |
+| `tools/count-tokens.js` | Rough token counter for context sizing. Zero dependencies. |
 
 ## The Rules
 

@@ -1,189 +1,74 @@
 # Cross-Validation
 
-Single-model AI collaboration has a fundamental weakness: **systematic bias**.
-
-Every LLM has specific training data distributions, architecture limitations, and knowledge blind spots. Claude may excel at TypeScript patterns but miss certain security edge cases. GPT-4 may generate excellent API designs but overlook accessibility concerns. These biases are not random — they are structural.
-
-Cross-validation uses **different systematic biases to cancel each other out**, revealing blind spots that no single model can detect.
+Single-model AI collaboration has a fundamental weakness: **systematic bias**. Every LLM has training-data blind spots that are structural, not random. Cross-validation uses **different systematic biases to cancel each other out**.
 
 This is not about "more AI is better." It is about **independent perspectives** on the same artifact.
 
 ---
 
-## The Problem with Single-Model Review
+## Default Flow (Use This First)
 
-When you use one AI model for both generation and review, you have:
-
-- **Shared training data**: the model has seen the same patterns, libraries, and conventions.
-- **Shared blind spots**: if the training data under-represents a security pattern, the model will neither generate nor detect it.
-- **Shared knowledge cutoff**: technologies released after training are equally unknown to generation and review.
-
-A human analogy: asking the same person to both write a document and proofread it. They will miss the same typos they made.
-
-## Three Layers of Cross-Validation
-
-### Layer 1: Review Cross-Validation
-
-Use a different model to independently review what the first model generated.
+For 90% of high-stakes decisions, you only need **Layer 1: Review Cross-Validation** with **two models**.
 
 **Mechanism:**
 1. Model A generates an artifact (Spec / Design / Code).
-2. Model B reviews the artifact independently. **Do not tell Model B that the artifact was AI-generated.** Present it as a human draft.
+2. Model B reviews the artifact independently. Present it with explicit attribution but neutral framing (see Step 3 below).
 3. Human compares both review outputs and merges unique findings.
 
-**Example:**
-```
-Step 1: Claude-4 generates Design for payment webhook handler.
-Step 2: GPT-4.5 reviews the Design (given only the Design + Spec).
-Step 3: Claude-4 found 3 issues. GPT-4.5 found 5 issues, 2 overlapping.
-Step 4: Human merges 6 unique issues, prioritizes by severity.
-```
-
 **Cost:** +30% time, +100% token consumption.
-**Benefit:** ~25-35% increase in defect detection. Most valuable for catching categories of errors that Model A systematically misses.
+**Benefit:** ~25-35% increase in defect detection.
 
-**When to use:**
+**When to use the default flow:**
 - Architecture decisions
 - Security-critical designs
 - Complex interface contracts
 - Any Red Zone task (see `docs/CAPABILITY.md`)
 
----
-
-### Layer 2: Generation Cross-Validation
-
-Use two different models to independently implement the same task, then compare.
-
-**Mechanism:**
-1. Model A implements the task from the Spec + Design.
-2. Model B implements the same task from the same Spec + Design, without seeing A's output.
-3. Human compares both implementations.
-4. If implementations diverge significantly: the Spec or Design is ambiguous. Return to Design phase.
-5. If implementations are similar: select the better one, or fuse the best parts of both.
-
-**Example:**
-```
-Task: Implement cached API client with retry logic.
-
-Claude-4: Uses stale-while-revalidate with memoize.
-GPT-4.5: Uses TTL-based cache with exponential backoff.
-
-Comparison:
-- Claude's cache invalidation is more sophisticated.
-- GPT's error handling covers more HTTP status codes.
-- GPT missed connection timeout handling (Claude has it).
-- Claude missed 503 retry logic (GPT has it).
-
-→ Human fuses both: Claude's invalidation + GPT's status coverage + adds missing timeout and retry.
-```
-
-**Key insight:** When two independent models produce different solutions to the same spec, the problem is usually the **spec**, not the models. The divergence exposes ambiguity that a single model would silently resolve one way.
-
-**Cost:** +100% time, +100% token consumption.
-**Benefit:** Exposes spec ambiguity and elevates implementation quality through fusion.
-
-**When to use:**
-- Novel algorithms or business logic
-- Core infrastructure components (caching, routing, state management)
-- When the first model's implementation feels "uncertain"
-- When human cannot easily judge if the implementation is correct
+**When to skip:** UI components, boilerplate, documentation, hotfixes — the cost exceeds the value.
 
 ---
 
-### Layer 3: Adversarial Cross-Validation
+## When to Upgrade Beyond the Default
 
-Use one model to attack another model's design.
+| Situation | Upgrade To | Why |
+|-----------|-----------|-----|
+| Two models disagree on implementation approach | **Layer 2: Generation Cross-Validation** | Independent implementations expose spec ambiguity |
+| Security architecture (auth, payment, privacy) | **Layer 3: Adversarial Cross-Validation** | One model attacks the other's design |
+| First model's implementation feels "uncertain" | **Layer 2** | Compare two independent approaches |
+| Human cannot judge correctness easily | **Layer 2** | Fusion of two solutions elevates quality |
 
-**Mechanism:**
-1. Model A produces a Design.
-2. Model B is assigned an **adversarial role**: find every flaw, edge case, security hole, and inconsistency in A's Design.
-3. Model A fixes the identified issues.
-4. Model B re-attacks the fixed Design.
-5. Repeat for a maximum of **3 rounds**. If Model B still finds critical issues after 3 rounds, the design is structurally flawed — return to the Requirements phase and re-examine the problem definition.
+**Layer 2** (Generation): Two models implement the same spec independently. Divergence → spec ambiguity. Similarity → fuse best parts.
 
-**Example:**
-```
-Claude-4: "Authentication flow: user submits credentials → server validates →
-           issues JWT → client stores in localStorage."
-
-GPT-4.5 (adversarial): "This design has critical flaws:
-  1. localStorage is accessible to XSS — use httpOnly cookies instead.
-  2. No rate limiting on login endpoint — vulnerable to brute force.
-  3. JWT has no refresh token rotation — stolen tokens are valid forever.
-  4. No device fingerprinting — tokens can be replayed across devices.
-  5. Missing account lockout after failed attempts."
-
-Claude-4: Fixes all five issues.
-
-GPT-4.5 (re-attack): "Remaining issues:
-  1. Cookie SameSite policy not specified.
-  2. No audit log for authentication events."
-
-Claude-4: Fixes both.
-
-GPT-4.5 (re-attack): "No critical issues remaining."
-```
-
-**Cost:** +50-100% time, +200% token consumption.
-**Benefit:** Extremely effective for security-critical and high-risk designs. The adversarial dynamic forces Model A to defend its decisions, surfacing assumptions that would otherwise remain hidden.
-
-**When to use:**
-- Security architecture (auth, authorization, cryptography)
-- Payment or financial logic
-- Data privacy designs (GDPR, HIPAA)
-- Multi-tenant isolation schemes
+**Layer 3** (Adversarial): Model B attacks Model A's design for 3 rounds max. If critical issues remain after round 3, the design is structurally flawed — return to Requirements.
 
 ---
 
-## Applicability Matrix
-
-| Task Type | Recommended Layer | Notes |
-|-----------|-------------------|-------|
-| Security-critical logic | Layer 1 + Layer 3 | Defense in depth |
-| Architecture decisions | Layer 1 + Layer 2 | Validate + compare alternatives |
-| Complex algorithms | Layer 2 | Expose spec ambiguity |
-| API / interface design | Layer 1 | Two perspectives on contracts |
-| Novel business logic | Layer 1 or 2 | Depends on complexity |
-| Core infrastructure | Layer 2 | Caching, routing, state management |
-| UI components | None or Layer 1 | Usually not worth the cost |
-| Boilerplate / CRUD | None | Single model is sufficient |
-| Tests | Layer 1 | Different models find different edge cases |
-| Documentation | None | Low value |
-| Hotfixes | None | Speed优先 |
-
----
-
-## Human Role in Cross-Validation
+## Human Role
 
 Cross-validation does not remove the human. It adds more AI output for the human to integrate.
 
-The human is:
+- **Integrator**: compare outputs, resolve contradictions, fuse best parts.
+- **Tie-breaker**: when models disagree, the human decides.
+- **Quality gate**: even if both models approve, human still does final review.
 
-- **The integrator**: comparing outputs, resolving contradictions, fusing best parts.
-- **The tie-breaker**: when models disagree, the human decides which is correct.
-- **The quality gate**: even if two models both approve something, the human still does final review.
-
-### Managing Disagreement
-
-When models disagree:
-
-1. **Check if the disagreement reveals a spec ambiguity.** If so, fix the spec, not the models.
-2. **Check if one model has domain knowledge the other lacks.** (e.g., one was trained on more React code)
-3. **When in doubt, favor the more conservative option** — the one that is simpler, more explicit, or has fewer implicit assumptions.
-4. **Document the disagreement and resolution.** Future-you will want to know why you chose A over B.
+**Managing disagreement:**
+1. Check if disagreement reveals a **spec ambiguity**. If so, fix the spec.
+2. Check if one model has **domain knowledge** the other lacks.
+3. When in doubt, favor the **more conservative option** — simpler, more explicit, fewer assumptions.
+4. Document the disagreement and resolution.
 
 ---
 
-## Cost-Benefit Analysis
+## Cost-Benefit Summary
 
-| Layer | Time | Tokens | Cognitive Load | Defect Detection Boost |
-|-------|------|--------|----------------|----------------------|
-| None (single model) | 1x | 1x | Low | Baseline |
-| Layer 1 (review) | 1.3x | 2x | Medium | +25-35% |
-| Layer 2 (generation) | 2x | 2x | High | +30-40% + spec clarity |
-| Layer 3 (adversarial) | 1.5-2x | 3x | High | +40-60% (security) |
+| Layer | Time | Tokens | Defect Detection Boost |
+|-------|------|--------|----------------------|
+| None (single model) | 1x | 1x | Baseline |
+| Layer 1 (review) | 1.3x | 2x | +25-35% |
+| Layer 2 (generation) | 2x | 2x | +30-40% + spec clarity |
+| Layer 3 (adversarial) | 1.5-2x | 3x | +40-60% (security) |
 
-**Rule of thumb**: Use cross-validation when the cost of a defect exceeds the cost of the validation. For a payment system, a missed security flaw costs millions — cross-validation is cheap. For a CSS tweak, a defect costs nothing — cross-validation is waste.
+**Rule of thumb**: Use cross-validation when the cost of a defect exceeds the cost of validation. For a payment system, cross-validation is cheap. For a CSS tweak, it is waste.
 
 ---
 
@@ -191,25 +76,17 @@ When models disagree:
 
 ### Step 1: Select the Primary Model
 
-This is your default model for the project. Choose based on:
-- Your access and cost constraints
-- The technology stack (some models are stronger in certain languages)
-- Your past experience with model quality
+This is your default model for the project. Choose based on access, cost, technology stack, and past quality experience.
 
 ### Step 2: Select the Secondary Model
 
-This model should be **architecturally different** from the primary:
-- Different training data (different cutoff, different corpus weighting)
-- Different architecture (transformer variant, mixture-of-experts vs dense)
+Should be **architecturally different** from the primary:
+- Different training data (different cutoff, corpus weighting)
+- Different architecture (transformer variant, MoE vs dense)
 - Different provider (reduces shared infrastructure biases)
 
-Good pairs:
-- Claude + GPT (different training data, different safety alignment)
-- Claude + Gemini (different architectures)
-- GPT + local model (different scale, different cost constraints)
-- Claude/GPT + NIM (different provider, open-weight model with different failure modes)
-
-Avoid pairing models that are essentially the same base model with minor fine-tuning differences.
+Good pairs: Claude + GPT, Claude + Gemini.  
+Avoid: two models from the same base with minor fine-tuning differences.
 
 ### Step 3: Isolate Context
 
@@ -222,11 +99,9 @@ identify issues, risks, ambiguities, and security concerns independent of its so
 [ paste design ]
 ```
 
-Why transparency over deception: Nexus values Explicit over Implicit. The goal is to prevent Model B from adjusting its standard based on the model's identity ("Claude would have done it this way"), not to hide the generative nature of the artifact.
-
 ### Step 4: Structured Comparison
 
-Do not trust your memory to compare two model outputs. Use a structured format:
+Do not trust your memory. Use the structured report format:
 
 ```markdown
 # Cross-Validation Report: [Feature Name]
@@ -237,19 +112,13 @@ Do not trust your memory to compare two model outputs. Use a structured format:
 - Secondary Model: GPT-4.5
 
 ## Issues Found
-
 | Issue | Primary Found? | Secondary Found? | Severity | Resolution |
-|-------|---------------|-----------------|----------|------------|
 | Missing rate limiting | No | Yes | Critical | Fixed |
 | Edge case on empty input | Yes | No | Medium | Fixed |
-| Ambiguous error contract | Yes | Yes | High | Spec clarified |
 
 ## Unique Insights
 - **Primary only**: [what only the primary model caught]
 - **Secondary only**: [what only the secondary model caught]
-
-## Disagreements
-- [describe any contradictions between models and how resolved]
 
 ## Human Decision
 - [final verdict]
@@ -264,64 +133,58 @@ Manual copy-paste between tools is error-prone and inefficient. Nexus provides a
 ### Architecture: Skill + Script
 
 ```
-.claude/skills/cross-validate/SKILL.md   ← 集成层（引导、检查、解析）
+.claude/skills/cross-validate/SKILL.md   ← Integration layer (guidance, checks, parsing)
          │
-         │  调用
+         │  invokes
          ▼
-tools/cross-validate.js                  ← 执行引擎（API 调用、报告生成）
+tools/cross-validate.js                  ← Execution engine (API calls, report generation)
 ```
 
-**Skill 的职责**：询问文件和模型选择 → 检查环境变量 → 调用脚本 → 读取报告 → 帮助人类对比分析。
+**Skill responsibilities**: Ask for file and model selection → check environment variables → invoke script → read report → help human compare findings.
 
-**脚本的职责**：并行请求多个模型 API → 生成结构化 Markdown 报告。
+**Script responsibilities**: Parallel API requests to multiple models → generate structured Markdown report.
 
-这个分层设计满足 Nexus 原则：
-- **Human Final Judgment**：人类显式触发 `/cross-validate`，AI 不自主决定何时审查。
-- **No Agent**：不是后台进程，不是自主编排，每一步人类可观测、可中断。
-- **Explicit**：提示模板硬编码在脚本中，可直接阅读、审计、修改。
-- **Isolation by construction**：脚本对每一个模型使用完全相同的中性提示，不可能意外泄露"这是 AI 生成的"。
+This layered design satisfies Nexus principles:
+- **Human Final Judgment**: Human explicitly triggers `/cross-validate`; AI does not autonomously decide when to review.
+- **No Agent**: Not a background process, not autonomous orchestration. Every step is observable and interruptable by the human.
+- **Explicit**: The prompt template is hard-coded in the script and can be read, audited, and modified directly.
+- **Isolation by construction**: The script uses the exact same neutral prompt for every model. It cannot accidentally leak "this was AI-generated."
 
 ### Usage
 
-#### 方式一：通过 Claude Code Skill（推荐）
+#### Method 1: Via Claude Code Skill (Recommended)
 
-在 Claude Code 对话中触发：
+Trigger in a Claude Code conversation:
 
 ```
 /cross-validate
 ```
 
-Claude 会引导你完成：
-1. 选择要审查的文件
-2. 选择审查模型（默认推荐 claude + gpt）
-3. 检查 API key 环境变量
-4. 执行脚本并等待结果
-5. 解析报告，用表格对比各模型的发现
-6. 列出问题供你做最终决策
+Claude will guide you through:
+1. Selecting the file to review
+2. Selecting review models (default recommendation: claude + gpt)
+3. Checking API key environment variables
+4. Executing the script and waiting for results
+5. Parsing the report and comparing findings across models in a table
+6. Listing issues for your final decision
 
-#### 方式二：直接运行脚本
+#### Method 2: Run Script Directly
 
 ```bash
-# 审查设计文档
+# Review a design document
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
 
-# 使用全部三个模型
+# Use all three models
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt,gemini
 
-# 输出到自定义目录
+# Output to a custom directory
 node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
-
-# 使用 NVIDIA NIM（默认模型：Llama 3.1 405B）
-node tools/cross-validate.js docs/DESIGN_DOC.md --models nim
-
-# 使用自定义 NIM 端点和模型
-NIM_HOST=my-nim.example.com NIM_MODEL=llama-3.1-70b node tools/cross-validate.js src/auth.ts --models nim
 ```
 
-直接运行脚本适用于：
-- 不使用 Claude Code 的环境
-- CI/CD 流水线中的自动化审查
-- 批量处理多个文件
+Direct script execution is suitable for:
+- Environments without Claude Code
+- CI/CD pipeline automation
+- Batch processing multiple files
 
 ### Secure Credential Configuration (Required Reading)
 
@@ -336,11 +199,6 @@ export ANTHROPIC_API_KEY=sk-ant-...
 export OPENAI_API_KEY=sk-...
 export GOOGLE_API_KEY=...
 export DEEPSEEK_API_KEY=sk-...
-export KIMI_API_KEY=sk-...
-export NVIDIA_API_KEY=nvapi-...
-# Optional: override NIM endpoint and model
-export NIM_HOST=integrate.api.nvidia.com
-export NIM_MODEL=meta/llama-3.1-405b-instruct
 ```
 
 Add these to your shell profile (`~/.bashrc`, `~/.zshrc`, or Windows system environment variables) to persist across sessions. Environment variables do not touch any file — the most secure option.
@@ -356,11 +214,6 @@ ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 GOOGLE_API_KEY=...
 DEEPSEEK_API_KEY=sk-...
-KIMI_API_KEY=sk-...
-NVIDIA_API_KEY=nvapi-...
-# Optional: override NIM endpoint and model
-NIM_HOST=integrate.api.nvidia.com
-NIM_MODEL=meta/llama-3.1-405b-instruct
 EOF
 chmod 600 ~/.nexus/cross-validate.env
 ```
@@ -377,12 +230,12 @@ If the script cannot find credentials, it prints clear guidance on where to conf
 
 ### When to Use Automation
 
-| 场景 | 推荐方式 |
-|------|---------|
-| Layer 1（审查交叉验证）on 设计文档 | **Skill 或脚本**。并行审查，人类读报告。 |
-| Layer 2（生成交叉验证） | **不要用工具**。需要独立实现，不是审查。用不同会话/工具分别实现。 |
-| Layer 3（对抗交叉验证） | **部分适用**。工具运行的是审查提示，非对抗提示。先用工具跑审查，再手动对一个模型施加显式对抗角色。 |
-| 日常 Light Workflow | **跳过**。交叉验证是选择性防御，不是例行公事。 |
+| Scenario | Recommended Approach |
+|----------|---------------------|
+| Layer 1 (review cross-validation) on design docs | **Skill or script**. Parallel review; human reads report. |
+| Layer 2 (generation cross-validation) | **Do not use the tool**. Requires independent implementation, not review. Use separate sessions/tools. |
+| Layer 3 (adversarial cross-validation) | **Partially applicable**. The tool runs review prompts, not adversarial prompts. Run review first, then manually assign an explicit adversarial role to one model. |
+| Daily Light Workflow | **Skip**. Cross-validation is selective defense, not routine. |
 
 ### Fallback: Manual Cross-Validation
 

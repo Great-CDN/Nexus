@@ -38,7 +38,7 @@ Run **CHECKLIST: Requirements** from `docs/CHECKLISTS.md`.
 Do not proceed to Design until:
 - [ ] Spec has explicit scope and non-goals.
 - [ ] Every acceptance criterion is verifiable.
-- [ ] Human has read and approved the entire spec.
+- [ ] Human has stated explicit approval; no open questions remain; every acceptance criterion is understood.
 
 ### AI Role
 - Interview the human to clarify ambiguity.
@@ -57,6 +57,44 @@ Do not proceed to Design until:
 - **Vague acceptance criteria**: "Should work well" is not a criterion. "Handles 1000 concurrent requests with <100ms latency" is.
 - **Missing non-goals**: What you are NOT building is as important as what you are building.
 
+### Feature Decomposition
+
+If the problem statement contains multiple user-visible capabilities, decompose it before writing specs.
+
+**Step 1: List features**
+A feature is one coherent user-visible capability (e.g., "user can log in with OAuth"). Implementation details ("add JWT middleware") are not features.
+
+**Step 2: Map dependencies**
+Which features require others to exist first? Example: "billing history" requires "billing module."
+
+**Step 3: Assign priorities**
+Use the priority definitions from `docs/templates/feature-roadmap.md`:
+- **P0**: Foundation / architecture. Blocked by everything else.
+- **P1**: Core MVP value. The product is incomplete without it.
+- **P2**: Enhancement. MVP works without it.
+- **P3**: Nice to have. Defer.
+
+**Step 4: Resolve ties**
+When two features share a priority, sort by:
+1. **Dependency first**: If A is required by B, A comes first.
+2. **Risk first**: Unknown technology or uncertain feasibility goes first (fail fast).
+3. **Value density**: Higher user-value-per-effort comes first.
+
+**Step 5: Draw the MVP boundary**
+The MVP is the smallest set of features that delivers a complete user story. Be ruthless. If a feature is not required for the core story, it is not in the MVP.
+
+**Output**: `FEATURE_ROADMAP.md` (using `docs/templates/feature-roadmap.md`). Each feature in the roadmap gets its own `PRODUCT_SPEC.md` in subsequent Requirements sessions.
+
+**When to skip**: If the problem statement describes exactly one user-visible capability, skip decomposition and write a single spec.
+
+### Light Workflow Variant
+
+- **Template**: `docs/templates/spec-light.md`
+- **Output**: One paragraph describing the problem, 2-3 bullet scope items, 2-3 verifiable acceptance criteria.
+- **Non-goals**: One sentence stating what is not being built.
+- **No Open Questions table** required unless a genuine unknown blocks design.
+- **Exit**: Human states approval verbally or in one sentence.
+
 ---
 
 ## Phase 2: Design
@@ -68,6 +106,7 @@ Do not proceed to Design until:
 - `DESIGN_DOC.md` (using `docs/templates/design.md` or `docs/templates/design-light.md`).
 - Interface contracts (TypeScript types / API schemas / data models).
 - Implementation task breakdown.
+- **Capability Assessment** (per `docs/CAPABILITY.md` §Capability Assessment at Spec Time): For each task in the breakdown, classify AI capability (High / Medium / Low) and define the human-AI division of labor.
 
 ### Validation Criteria
 - Every acceptance criterion from the spec maps to at least one design element.
@@ -83,7 +122,7 @@ Do not proceed to Implementation until:
 - [ ] Design satisfies all acceptance criteria.
 - [ ] Interface contracts are defined.
 - [ ] Task breakdown covers the full spec.
-- [ ] Human has approved the design.
+- [ ] Human has confirmed every interface contract is understood and can be explained; all deviations from spec are documented with justification.
 
 ### AI Role
 - Propose architecture options with tradeoffs.
@@ -101,6 +140,13 @@ Do not proceed to Implementation until:
 - **Over-designing**: Design only what the spec requires. Do not build for hypothetical future needs.
 - **Ignoring constraints**: If the spec says "must work offline", the design must address it.
 - **Vague interfaces**: Types must be explicit. No `any`, no "we will figure it out later".
+
+### Light Workflow Variant
+
+- **Template**: `docs/templates/design-light.md`
+- **Output**: One paragraph describing the approach + an interface sketch (types or function signatures, not fully documented).
+- **No formal task breakdown** required. The approach paragraph should mention roughly what files will change.
+- **Exit**: Human confirms the approach makes sense and the sketch covers the acceptance criteria.
 
 ---
 
@@ -128,7 +174,7 @@ Run **CHECKLIST: Implementation** from `docs/CHECKLISTS.md` per task.
 Do not mark a task complete until:
 - [ ] Code matches the design.
 - [ ] Tests cover the acceptance criteria for this task.
-- [ ] Human has reviewed and understood the code.
+- [ ] Human has traced the primary execution path and primary error path (limit: 200 lines or 30 minutes per review chunk, whichever comes first; if larger, review in chunks).
 - [ ] Commit is made with conventional commit message.
 
 ### AI Role
@@ -160,6 +206,16 @@ Document the fallback in the task tracking: "T2: Human implementation (AI failed
 - **Tests as afterthought**: Write tests with code, not after. If it is hard to test, the design is wrong.
 - **Skipping commits**: Commit after every task. Small commits are cheap; large rollbacks are expensive.
 - **Ignoring the Fallback Rule**: If AI fails twice on a task, it will not succeed on the third try. Switch to human implementation.
+
+### Light Workflow Variant
+
+- **No formal task template** required. One session, one change.
+- **Required Inputs**: Approved spec (or spec-light) + a one-sentence approach.
+- **Review standard**: "Human has scanned the diff for obvious errors" (vs. full execution-path trace for Full Workflow).
+- **Automated checks** (type check, lint, tests) still mandatory.
+- **Commit**: Conventional commit format still required; reference the spec.
+- **Snapshots**: Optional. The commit message and diff are sufficient audit trail for trivial changes.
+- **Exit**: Automated checks pass; human has scanned the diff for obvious errors; commit is clean and references the spec.
 
 ---
 
@@ -209,6 +265,14 @@ Do not proceed to Acceptance until:
 - **Ignoring flaky tests**: A flaky test is worse than no test. Fix or delete it.
 - **Manual verification gaps**: If a feature has UI, someone must look at it. Automated tests do not catch visual bugs.
 
+### Light Workflow Variant
+
+- **No formal test plan template** required.
+- **Required**: Existing test suite still passes.
+- **Required**: Manual verification of the changed behavior.
+- **New tests**: Only if the change introduces new logic. UI-only changes may skip new tests if existing coverage is sufficient.
+- **Exit**: Existing tests pass + human has manually verified the change.
+
 ---
 
 ## Phase 5: Acceptance
@@ -257,6 +321,13 @@ Do not deploy until:
 - **Scope expansion at acceptance**: If you think of a new feature, write it down for the next cycle. Do not add it now.
 - **Ignoring technical debt**: Note all debt. Decide if it is blocking. Do not pretend it does not exist.
 
+### Light Workflow Variant
+
+- **No formal acceptance report** required for truly trivial changes.
+- **Written verdict** for anything touching business logic or user-visible behavior.
+- **Verbal "looks good"** permitted only for changes that affect zero business logic paths and zero user-visible behavior (e.g., CSS color tweak, comment correction).
+- **Exit**: Human states go / no-go. If no-go, fix and re-verify.
+
 ---
 
 ## Phase 6: Maintenance
@@ -297,3 +368,11 @@ Run **CHECKLIST: Maintenance** from `docs/CHECKLISTS.md` per change.
 - **Hotfix without spec**: Even a one-line fix should reference the issue and be reviewed.
 - **Documentation rot**: When code changes, docs must change. AI can help, but human must verify.
 - **Debt accumulation**: Address debt regularly. Do not let it compound.
+
+### Light Workflow Variant
+
+- **No formal change log template** required for trivial fixes.
+- **Required**: Commit references the issue or bug report.
+- **Required**: Root cause is stated (one sentence is enough).
+- **Tests**: Add or update only if the fix touches logic. Comment fixes may skip.
+- **Exit**: Human has verified the fix and the commit is clean.

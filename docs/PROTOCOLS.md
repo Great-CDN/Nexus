@@ -4,6 +4,32 @@ Protocols define how humans and AI communicate within Nexus. They are rules, not
 
 ---
 
+## Rule Priority
+
+Nexus documents have a strict precedence order. When two documents conflict, the higher-priority document wins.
+
+| Priority | Source | Role | Can Override |
+|----------|--------|------|--------------|
+| 1 | `CLAUDE.md` §Critical Rules (Absolute) | Hard constraints for AI behavior | Everything |
+| 2 | `PROTOCOLS.md` | Binding operational rules | Templates, examples, checklists |
+| 3 | `PHILOSOPHY.md` | Principles and reasoning | Nothing; explains *why* rules exist |
+| 4 | `WORKFLOWS.md` | Phase definitions and flow | Nothing; operationalizes protocols |
+| 5 | `CHECKLISTS.md` | Verification steps | Nothing; checks compliance with rules above |
+| 6 | `docs/templates/` | Format templates | Nothing; defines artifact structure only |
+| 7 | `docs/WORKED_EXAMPLE.md` | Illustrative walkthrough | Nothing; example, not normative |
+| 8 | `docs/reviews/` | Historical cross-validation reports | Nothing; snapshots in time, not living rules |
+
+**Conflict resolution**: If `PHILOSOPHY.md` and `PROTOCOLS.md` say different things, `PROTOCOLS.md` wins. If a template contradicts a protocol, the protocol wins. If a worked example contradicts a rule, the rule wins.
+
+**Template conflicts**: Priority 6 covers any file inside `docs/templates/`. If two templates conflict (e.g., `spec.md` vs. `spec-light.md`), the Triage Protocol decision (Full vs. Light Workflow) determines which applies. Neither template can override a protocol.
+
+**Examples of invalid overrides**:
+- A template cannot relax the "no vague acceptance criteria" rule.
+- A worked example cannot justify skipping a required checklist.
+- Philosophy cannot override a hard protocol (e.g., "Explicit Context > Implicit Memory" is philosophy; the 1200-line context limit in the Context Packaging Protocol is the binding rule).
+
+---
+
 ## Spec Format Protocol
 
 Every `PRODUCT_SPEC.md` must use `docs/templates/spec.md` and include these mandatory sections. A spec without all sections is incomplete.
@@ -22,7 +48,25 @@ Every `PRODUCT_SPEC.md` must use `docs/templates/spec.md` and include these mand
 
 - **One spec per feature**. Do not bundle unrelated features. A single spec may span multiple implementation tasks; the boundary is "one coherent user-visible capability," not "one session."
 - **Specs are plain Markdown**. No diagrams required, but ASCII or linked diagrams are allowed.
+  - If using ASCII diagrams, keep them compact. If a diagram exceeds 20 lines, link an external file (e.g., `docs/diagrams/`) rather than embedding it, to stay within the 800-line mixed-content limit.
 - **Acceptance criteria are the contract**. Code is done when all criteria are met, not when it "feels done".
+
+### Spec Versioning
+
+Specs evolve. Version management prevents "which spec am I building against?" confusion.
+
+**Version rules**:
+- **v1.0** — Initial spec at Design phase start.
+- **v1.1, v1.2** — Minor revisions (clarifications, typo fixes, additional examples) that do not change scope or acceptance criteria meaning.
+- **v2.0** — Major revision: scope changes, new acceptance criteria, removed non-goals, or altered assumptions. Any in-progress implementation tasks must be re-evaluated against the new version.
+
+**When to create a new version**:
+- Before Design phase starts: spec is v1.0.
+- During Design: if the spec needs revision to make design possible, bump to v1.1.
+- After Design is approved: do not revise the spec without creating a new version. The approved design was built against a specific spec version.
+- During Implementation: if new information requires spec changes, create a new version, re-approve the spec, and evaluate whether ongoing tasks need rework.
+
+**Anchoring implementation tasks**: Snapshots copy the spec, not link it. A task snapshot always contains `spec-vX.Y.md` — the exact version the task was built against. This makes version drift visible, not hidden.
 
 ---
 
@@ -89,6 +133,7 @@ Prompts are structured inputs derived from specs, not creative writing.
 1. **No open-ended generation**. "Build a login page" is forbidden. "Implement LoginPage.tsx per DESIGN_DOC.md section 3.2 using the AuthContext pattern" is required.
 2. **Include constraints in every prompt**. Do not assume AI remembers constraints from context.
 3. **Request one artifact per prompt**. One function, one component, one test file.
+   - Exception: If a single artifact is expected to exceed the model's output token limit (e.g., a large component with embedded styles and logic), split it into multiple prompts and combine manually.
 4. **Specify output format**. "Return only the code, no explanation" or "Return the code plus a 3-sentence summary of the changes".
 5. **No "improve this" prompts**. Improvement is vague. Specify the metric: "reduce cyclomatic complexity below 10" or "extract the fetch logic into a reusable hook".
 
@@ -120,6 +165,8 @@ Before human review, run automated checks. These catch what humans miss and what
 - Bundle size check (if applicable)
 
 **Rule**: Automated checks must pass before human review begins. Human time is expensive; do not waste it on problems a machine can find.
+
+**Fallback**: If a required automated check is not available for the project (e.g., no security scanner set up, no test framework configured), document the gap in the repository README and manually verify that check's concern during human review. The goal is to have all checks operational before the next review cycle. Do not let missing tooling block all reviews indefinitely.
 
 ### Human Review Checklist
 
@@ -226,7 +273,10 @@ status: active | resolved
 - Review memory monthly. Delete stale entries.
 - If memory contradicts a spec, the spec wins. Update memory.
 - Memory is a hint, not a rule. Always verify against current state.
-- **Atomic writes**: Each memory entry is one file. Do not append to a shared file. If two sessions write simultaneously, the last write wins. Use descriptive filenames to avoid collisions (e.g., `user_prefers_tabs.md` not `memory_01.md`).
+- **Atomic writes**: Each memory entry is one file. Do not append to a shared file.
+  - Write to a temporary file, then rename to the final filename. This prevents corruption from partial writes if a session crashes mid-write.
+  - If two sessions write simultaneously, the last write wins. Use descriptive filenames to avoid collisions (e.g., `user_prefers_tabs.md` not `memory_01.md`).
+  - For team environments where multiple humans may write concurrently, consider using a lock file (`.claude/memory/.lock`) to serialize writes. If a lock is not feasible, accept the risk and verify memory files for completeness on read.
 
 ---
 
@@ -245,11 +295,14 @@ Used in reviews, bug tracking, and risk assessment:
 | **Medium** | Noticeable issue, manageable workaround. | UI inconsistency, unclear error message | Why it is noticeable; what is the workaround |
 | **Low** | Cosmetic, negligible impact, or preference. | Typo, formatting inconsistency | Brief note on why it is low |
 
+Every severity assignment must include the justification described in the Justification Required column. A severity without justification is incomplete.
+
 ### Branch Naming
 
 | Type | Pattern | Example |
 |------|---------|---------|
 | Feature | `feature/<short-name>` | `feature/rule-editor` |
+| Fix | `fix/<scope>-<description>` | `fix/auth-cache-key` |
 | Exploration | `exploration/<YYYY-MM-DD>-<topic>` | `exploration/2026-05-11-dnd-kit` |
 | Hotfix | `hotfix/<issue-id-or-description>` | `hotfix/auth-token-leak` |
 
@@ -283,6 +336,8 @@ Types:
 ### Commit Rules
 
 1. **One task, one commit**. Do not bundle unrelated changes.
+   - A "task" is defined by the spec or task reference. If a single session covers multiple logically separate changes (different acceptance criteria), split into multiple commits.
+   - Light Workflow exception: A single commit is acceptable if all changes are trivial, related to the same UI surface or API endpoint, and documented in the commit message body.
 2. **Commit message explains why, not what**. The diff shows what; the message explains why.
 3. **Reference the spec**. If a commit implements AC-3, mention it: `feat(auth): implement password reset (AC-3)`.
 4. **No WIP commits in main**. Feature branches can have WIP commits, but squash or clean before merge.
@@ -335,12 +390,59 @@ Sessions do not always complete normally. Define the abort path:
 1. **Human must leave mid-session**: Save the current AI output (even if incomplete) to a scratch file. Note the stopping point in the task tracker. Resume from that point in a new session with a fresh context reload — do not attempt to continue from conversation memory.
 2. **Connection drops or tool failure**: If an AI tool call fails (network error, API timeout), do not retry blindly. Verify the last successful state from git or the snapshot, then resume from there.
 3. **Power failure or crash**: This is why frequent commits matter. The maximum uncommitted work at risk is one task. After recovery, check git status, review the diff, and decide whether to continue or restart.
+4. **API hard limit reached**: Context window exceeded, quota/billing exhausted, session time limit hit (e.g., 5-hour limit), or authentication failure. Stop immediately. Do not retry. Follow the Session Recovery Protocol below.
+
+### API Failure Classification
+
+When an AI API call fails, classify before acting:
+
+| Error Type | Examples | Action |
+|------------|----------|--------|
+| **Transient** | Network timeout, 5xx server error, rate limit (429) | Retry with exponential backoff: 1s, 2s, 4s. Max 3 attempts. If all fail, treat as session interruption. |
+| **Hard limit** | Context window exceeded, quota/billing exhausted, session time limit, auth failure | Do not retry. Stop immediately. Follow Session Recovery Protocol. |
+| **Client error** | Invalid prompt format, malformed tool call | Fix the input and retry once. If it fails again, treat as session interruption. |
+
+**Never retry a hard limit error.** Retrying a context-window exceedance or an expired session wastes tokens and time. Hard limits require a fresh session.
+
+### Session Recovery Protocol
+
+When any interruption terminates a session abnormally, use this protocol to resume without losing state:
+
+1. **Preserve uncommitted output**: Save any AI-generated but uncommitted work to `.claude/scratch/YYYY-MM-DD-HHMM-<task>.md`.
+2. **Record the breakpoint**: In the task tracker or a scratch note, record:
+   - Task name and spec version
+   - Last completed step
+   - File being edited and approximate line/section
+   - What was about to happen next
+3. **Commit completed work**: If any portion of the task was finished before the interruption, commit it now with a note: `wip: partial <task> before session interruption`.
+4. **Start a recovery session**: Reload context per the Context Packaging Protocol. The context package must include:
+   - Original spec and design references
+   - Breakpoint note
+   - Scratch file content (paste it)
+   - Git status / diff since last commit
+5. **Resume from breakpoint**: Continue from where the interruption occurred. Do not regenerate already-completed work. Verify the current file state matches expectations before proceeding.
 
 ### Session Length
 
 - **Target: 30–60 minutes**. Longer sessions accumulate drift.
 - **Maximum: 2 hours**. If a task takes longer, the task was too large. Split it.
-- **One session = one task**. Do not start a new task in the same session without reloading context.
+- **One session = one task**. A session may include multiple iterations of review and fixes, but must be centered on a single task. Do not start a new task in the same session without reloading context. If a task requires more than one session, explicitly split it into subtasks, each with its own session and context reload.
+
+---
+
+## Threshold Classification
+
+Nexus uses numeric thresholds across multiple documents. Not all thresholds have the same force. They are classified into three tiers:
+
+| Tier | Meaning | Violation Consequence | Examples |
+|------|---------|----------------------|----------|
+| **Hard Limit** | Must not exceed. These are physical or process boundaries. | Process is invalid; split the task immediately. | 1200 lines mixed content (context hard ceiling); 2 hours max per task; 2 hours max per session; no Critical/High bugs at acceptance |
+| **Soft Limit** | Warning zone. Exceeding requires explicit justification. | Elevated risk; document why the exception is safe. | 800 lines mixed content (context warning); 30–60 min session target; 150 lines module contract; 200 lines or 30 min per review chunk |
+| **Heuristic** | Rough guidance for estimation. Highly context-dependent. | None; adjust to your project and team. | 200–400 lines/hour human review rate; phase dwell time targets (10–30 min Requirements, etc.); 100–200 lines system architecture doc; ~2000 lines pure prose |
+
+**Why lines instead of tokens?** Lines are a fast, tool-free proxy. Token density varies by language and format. When precision matters, use `node tools/count-tokens.js <file>`. See `docs/SCALE.md` for the token-density rationale.
+
+**How to use this table**: If you are near a Soft Limit, consider splitting. If you hit a Hard Limit, you must split. Heuristics are for planning, not enforcement.
 
 ---
 
@@ -366,7 +468,7 @@ Use for: small enhancements, UI tweaks, adding a field to a form, routine depend
   - Review standard: "Human has scanned the diff for obvious errors" (vs. full execution-path trace for Full Workflow).
   - Automated checks (type check, lint, tests) still mandatory.
 - **Testing**: Manual verification + existing test suite still passes.
-- **Acceptance**: Written verdict for anything touching business logic; verbal "looks good" permitted only for zero-business-logic changes (e.g., CSS color tweak).
+- **Acceptance**: Written verdict for anything touching business logic or user-visible behavior; verbal "looks good" permitted only for changes that affect zero business logic paths and zero user-visible behavior (e.g., CSS color tweak, comment correction). When in doubt, use a written verdict.
 - **Snapshots**: Optional for implementation. Diff in commit message is sufficient.
 
 #### Hotfix
@@ -375,7 +477,7 @@ Use for: production bugs, security patches, critical broken functionality.
 
 - **Requirements**: Bug report is the requirement. Minimum contents: (1) exact reproduction steps, (2) expected vs. actual behavior, (3) affected scope / users, (4) regression risks. No formal spec template required for trivial fixes; use `docs/templates/spec-light.md` if the fix touches non-obvious logic.
 - **Design**: Skip if the fix is obvious; one-sentence design if not.
-- **Implementation**: One task, one session. Get in, fix, get out.
+- **Implementation**: One task, one session (max 2 hours). If the hotfix exceeds this, split into logical subtasks (e.g., fix + validation) with separate sessions, and document the split in the change log.
 - **Testing**: Reproduce the bug, apply fix, verify fix, check for regressions. Run the full test suite if possible.
 - **Acceptance**: Verify the bug is fixed; verify no regressions.
 - **Maintenance**: Change log entry mandatory.
@@ -431,7 +533,10 @@ The document must be as short as possible without sacrificing completeness. Comp
 - **One idea per paragraph.** If a paragraph contains multiple decisions, split it.
 - **Tables over paragraphs.** Comparative data (tradeoffs, options, test cases) belongs in tables. Tables compress information and reduce parsing ambiguity.
 - **No redundant restatements.** Do not repeat what is already in the spec in the design, or what is in the design in the task. Reference; do not duplicate.
-- **Line limits.** Mixed-content artifacts (code + prose) must not exceed 800 lines. Pure prose documents may reach ~2000 lines because prose has lower token density. If an artifact exceeds its limit, the scope is too large and must be split. See `docs/SCALE.md` for the full context-window rationale.
+- **Line limits by content type.**
+  - **Mixed-content artifacts** (code + prose combined): must not exceed 800 lines.
+  - **Pure prose documents** (specs, designs with no embedded code): may reach ~2000 lines because prose has lower token density.
+  - If a mixed-content artifact exceeds 800 lines, or a pure prose document exceeds ~2000 lines, the scope is too large and must be split. See `docs/SCALE.md` for the full context-window rationale.
 - **No decorative language.** "Elegantly handles", "seamlessly integrates", "robustly manages" add zero information. Remove them.
 
 ### 4. Explicit（显式）

@@ -17,7 +17,21 @@ Run this before approving a `PRODUCT_SPEC.md`.
 - [ ] Dependencies are identified.
 - [ ] Open questions are listed and have owners.
 - [ ] Spec is plain Markdown, readable without tools.
-- [ ] Human has read the entire spec and agrees with it.
+- [ ] If the initiative contains multiple user-visible capabilities, a `FEATURE_ROADMAP.md` exists using `docs/templates/feature-roadmap.md`, dependencies are acyclic, and the MVP boundary is drawn.
+- [ ] Human has recorded explicit approval (verdict.md or task tracker); can restate every acceptance criterion without referencing the spec.
+
+---
+
+## CHECKLIST: Feature Roadmap
+
+Run this before approving a `FEATURE_ROADMAP.md`.
+
+- [ ] Every feature is a coherent user-visible capability, not an implementation detail.
+- [ ] Dependency graph has no cycles.
+- [ ] Every P0 and P1 feature has a corresponding spec planned or written.
+- [ ] MVP boundary is defensible: a user can achieve the core goal with MVP features alone.
+- [ ] No single execution phase exceeds 2 weeks of estimated implementation time.
+- [ ] Human has recorded the priority order and MVP boundary in the roadmap file.
 
 ---
 
@@ -33,8 +47,9 @@ Run this before approving a `DESIGN_DOC.md`.
 - [ ] Task breakdown covers the full spec with no gaps.
 - [ ] No task exceeds 2 hours of estimated work.
 - [ ] Design does not introduce scope beyond the spec.
-- [ ] Human understands every interface and can explain it.
-- [ ] Human has approved the design.
+- [ ] Every task has a capability assessment (High / Medium / Low) and a defined human-AI division of labor.
+- [ ] Human can articulate every interface contract in one sentence without referencing the document.
+- [ ] All deviations from spec are documented with justification.
 
 ---
 
@@ -64,11 +79,12 @@ Run this before proceeding to Acceptance.
 - [ ] Integration tests pass for critical paths.
 - [ ] Manual verification covers all UI/UX acceptance criteria.
 - [ ] Edge cases are tested (empty input, maximum size, invalid format, network failure).
-- [ ] No flaky tests (run test suite 3 times; results must be identical).
+- [ ] No flaky tests in deterministic suites (run 3 times; results identical). For tests involving time, randomness, or external dependencies, document the stability strategy (e.g., mocked clocks, seeded RNG, stubbed network).
 - [ ] Test coverage is documented (percentage is noted, not mandated).
 - [ ] Bug list is compiled with severity (Critical / High / Medium / Low).
 - [ ] No Critical or High bugs remain.
-- [ ] Every acceptance criterion has a documented verification method in the test plan or traceability matrix.
+- [ ] Every acceptance criterion has a documented verification method in the test plan.
+- [ ] Tests are independent of implementation: at least one test would fail if the implementation were replaced with a naive or incorrect version (verifies the test checks behavior, not code structure).
 - [ ] Human has performed manual verification.
 
 ---
@@ -93,12 +109,12 @@ Run this before declaring a feature complete.
 Run this for every bug fix or small change.
 
 - [ ] Change references an issue or spec update.
-- [ ] Root cause is understood, not just symptom fixed.
+- [ ] Root cause is documented with evidence (reproduction steps, log excerpts, code trace), not just symptom described.
 - [ ] Fix is minimal (smallest change that resolves the issue).
 - [ ] Tests are added or updated to prevent regression.
 - [ ] Documentation is updated if behavior changed.
 - [ ] Change log is updated.
-- [ ] Human has reviewed the fix.
+- [ ] Human has verified the fix resolves the reported issue and traced the changed code paths.
 - [ ] Commit references the issue.
 
 ---
@@ -117,8 +133,9 @@ Run this before approving any Nexus output document (spec, design, task, review,
 - [ ] **Explicit**: Abbreviations expanded on first use; implicit assumptions are surfaced.
 - [ ] **Explicit**: Every decision includes the constraint or requirement that drove it.
 - [ ] **Explicit**: Error cases are described with the same detail as success paths.
-
-Run the template-specific Quality Checklist for the artifact type (see the template file) **after** this universal checklist is complete.
+- [ ] **Coherent**: Redundancy test passed — removing any single paragraph loses meaning.
+- [ ] **Coherent**: Transition test passed — every adjacent pair of paragraphs has an explicit logical relationship.
+- [ ] **Coherent**: Sequence test passed — first sentences of all paragraphs form a complete reasoning chain.
 
 ---
 
