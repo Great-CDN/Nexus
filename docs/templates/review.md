@@ -67,3 +67,19 @@
 **Decision:** Go / No-Go
 
 **Reasoning:** <...>
+
+---
+
+## Quality Checklist
+
+Run this before finalizing the review report.
+
+- [ ] **Accurate**: Every issue references an exact file path and line number or function name.
+- [ ] **Accurate**: Every deviation from design or spec is explicitly called out, not implied.
+- [ ] **Complete**: Every acceptance criterion has a status (Pass / Fail / Partial) with evidence or rationale.
+- [ ] **Complete**: Severity is assigned to every issue (Critical / High / Medium / Low) with justification.
+- [ ] **Complete**: Technical debt items include priority and a proposed resolution timeline.
+- [ ] **Simple**: No redundant restatements of what the code does (the diff shows that); focus on what is wrong or risky.
+- [ ] **Simple**: Review is under 400 lines. If the change is too large to review in one pass, request it be split.
+- [ ] **Explicit**: Verdict is one of the three allowed states (Approve / Approve with notes / Request changes); no soft language like "looks okay".
+- [ ] **Explicit**: Human decision includes a clear Go or No-Go with reasoning; "probably fine" is not acceptable.

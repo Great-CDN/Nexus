@@ -61,3 +61,20 @@ interface DomainValidator {
 ## Notes
 
 <Any additional technical notes or references.>
+
+---
+
+## Quality Checklist
+
+Run this before declaring the design complete.
+
+- [ ] **Accurate**: Every interface contract uses exact type signatures and literal names; no placeholders like `any` or `TBD`.
+- [ ] **Accurate**: Rejected alternatives are documented with the specific reason for rejection (not just "didn't choose").
+- [ ] **Complete**: Every acceptance criterion from the spec maps to at least one design element.
+- [ ] **Complete**: Error paths are described with the same detail as success paths (status codes, error types, fallback behavior).
+- [ ] **Complete**: Task breakdown covers the full spec with no gaps; every spec item appears in at least one task.
+- [ ] **Simple**: Design is under 800 lines. If longer, the feature should be decomposed into sub-systems with separate designs.
+- [ ] **Simple**: No duplication of spec content; cross-reference the spec instead of restating it.
+- [ ] **Explicit**: Every architectural decision includes the constraint or requirement that drove it.
+- [ ] **Explicit**: Every risk includes a concrete mitigation, not just "will monitor".
+- [ ] **Explicit**: Task estimates include units (minutes / hours) and dependencies are explicit.

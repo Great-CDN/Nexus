@@ -102,6 +102,25 @@ Run this for every bug fix or small change.
 
 ---
 
+## CHECKLIST: Artifact Quality
+
+Run this before approving any Nexus output document (spec, design, task, review, test plan, change log).
+
+- [ ] **Accurate**: No vague qualifiers ("usually", "probably", "most"); named references are exact literals.
+- [ ] **Accurate**: Assumptions are falsifiable; metrics have units and sources.
+- [ ] **Complete**: Reader can derive what, why, who, when, where without asking questions.
+- [ ] **Complete**: Boundaries (preconditions, postconditions) are explicit for every rule or process.
+- [ ] **Complete**: No orphaned references; every cross-reference points to a specific section, file, or commit.
+- [ ] **Simple**: One idea per paragraph; comparative data is in tables.
+- [ ] **Simple**: No redundancy; no decorative language; artifact is under 800 lines.
+- [ ] **Explicit**: Abbreviations expanded on first use; implicit assumptions are surfaced.
+- [ ] **Explicit**: Every decision includes the constraint or requirement that drove it.
+- [ ] **Explicit**: Error cases are described with the same detail as success paths.
+
+Also run the template-specific Quality Checklist for the artifact type (see the template file).
+
+---
+
 ## CHECKLIST: Context Loading
 
 Run this at the start of every AI session.
@@ -113,4 +132,4 @@ Run this at the start of every AI session.
 - [ ] Relevant existing code is pasted (types, interfaces, patterns).
 - [ ] Hard constraints are stated explicitly.
 - [ ] Single instruction for this session is the last item.
-- [ ] Context fits within 2000 lines (or task is split).
+- [ ] Context fits within 1200 lines absolute maximum, ideally under 800 lines (or task is split).

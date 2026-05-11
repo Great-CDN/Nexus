@@ -315,3 +315,59 @@ If any row points to Full, use Full. If the change is a production incident, use
 - **Using Hotfix for features**: "I'll just call it a hotfix to skip the spec" — no. Hotfix is for broken production code, not for new work.
 - **Skipping Testing on Light**: Even light workflow requires verification. The only thing that shrinks is documentation, not validation.
 - **Snapshots for trivial changes**: If a change is one line and obviously correct, a snapshot is bureaucracy. The commit message is the audit trail.
+
+---
+
+## Artifact Quality Standard
+
+All Nexus output documents — specs, designs, tasks, reviews, test plans, change logs — must satisfy four quality dimensions. These are not aesthetic preferences; they are functional requirements that reduce error propagation between human and AI.
+
+### 1. Accurate（准确）
+
+Every statement in the document must be **verifiably true** within the project's context at the time of writing.
+
+- **No ambiguous qualifiers.** "Usually", "probably", "might" are forbidden unless paired with a probability or condition. "Most requests" is vague; "Requests under 10KB" is accurate.
+- **Named references are precise.** File paths, function names, API endpoints, and version numbers must be exact literal values. "The auth module" is inaccurate; `src/auth/AuthService.ts` is accurate.
+- **Assumptions are grounded.** Every assumption must state what would falsify it. "Assumes Redis is available" is weak; "Assumes Redis 7.x on localhost:6379; if false, falls back to in-memory cache per DESIGN_DOC.md §3.2" is accurate.
+- **Metrics have units.** "Fast" is inaccurate. "< 100ms p95 latency under 1000 concurrent connections" is accurate.
+
+### 2. Complete（完整）
+
+The document must contain everything a competent reader needs to act on it without seeking clarification.
+
+- **Answer the five Ws implicitly.** What, Why, Who, When, and Where must be derivable from the text. If a reader must ask "what happens if X?", the document is incomplete.
+- **Boundary conditions are explicit.** Every rule, function, or process must state its preconditions and postconditions. What must be true before this runs? What is guaranteed after?
+- **Rejected alternatives are recorded.** For every decision, at least one rejected alternative and the reason for rejection must be documented. This prevents revisiting the same debate.
+- **No orphaned references.** Every cross-reference points to a specific section, file, or commit hash. "See the auth docs" is incomplete; "See `docs/auth.md` §Token Rotation" is complete.
+- **Open questions have owners and deadlines.** An unresolved question without an owner is an invisible risk.
+
+### 3. Simple（简单）
+
+The document must be as short as possible without sacrificing completeness. Complexity is information entropy; entropy breeds error.
+
+- **One idea per paragraph.** If a paragraph contains multiple decisions, split it.
+- **Tables over paragraphs.** Comparative data (tradeoffs, options, test cases) belongs in tables. Tables compress information and reduce parsing ambiguity.
+- **No redundant restatements.** Do not repeat what is already in the spec in the design, or what is in the design in the task. Reference; do not duplicate.
+- **Line limits.** Specs and designs must not exceed 800 lines. If they do, the scope is too large and must be split. This aligns with the Small Context rule.
+- **No decorative language.** "Elegantly handles", "seamlessly integrates", "robustly manages" add zero information. Remove them.
+
+### 4. Explicit（显式）
+
+"Elegant" is subjective and unenforceable. Its functional equivalent in documentation is **explicit** — nothing is left for the reader to infer.
+
+- **Every abbreviation is expanded on first use.** Even obvious ones like "API" or "UI" must be defined if the document is intended for a broad audience.
+- **Implicit assumptions are surfaced.** If the writer assumes the reader knows the codebase structure, that assumption must be written down.
+- **Every decision has a reason.** "Use React" is explicit; "Use React (team has 5 years collective experience; migration cost of Vue is unacceptable)" is explicit with reasoning.
+- **Every number has a source.** "Supports 10,000 users" must state whether this is tested, estimated, or required.
+- **Error cases are first-class.** Do not describe the happy path and append "errors are handled gracefully." Describe the error path with the same detail as the success path.
+
+### Quality Checklist (Universal)
+
+Before any artifact is marked complete, run this checklist:
+
+- [ ] **Accurate**: No vague qualifiers; named references are exact; assumptions are falsifiable; metrics have units.
+- [ ] **Complete**: Five Ws derivable; boundaries stated; alternatives recorded; no orphaned references; open questions owned.
+- [ ] **Simple**: One idea per paragraph; tables for comparisons; no redundancy; under 800 lines; no decorative language.
+- [ ] **Explicit**: Abbreviations expanded; assumptions surfaced; decisions justified; numbers sourced; errors described in full.
+
+If any item fails, the artifact is incomplete. Revise and re-check.

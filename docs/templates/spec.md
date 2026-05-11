@@ -53,3 +53,20 @@
 ## Notes
 
 <Any additional context, references, or background.>
+
+---
+
+## Quality Checklist
+
+Run this before declaring the spec complete.
+
+- [ ] **Accurate**: Every acceptance criterion answers "how do we know this is done?" with a measurable condition.
+- [ ] **Accurate**: Named references (APIs, files, versions) are exact literal values, not descriptions.
+- [ ] **Complete**: A reader can derive what, why, who, when, and where without asking questions.
+- [ ] **Complete**: Every in-scope item has a corresponding acceptance criterion; nothing is implied.
+- [ ] **Complete**: Open questions have owners and due dates; no orphaned questions remain.
+- [ ] **Simple**: Spec is under 800 lines. If longer, scope should be split into multiple specs.
+- [ ] **Simple**: No decorative language ("elegantly", "seamlessly", "robustly").
+- [ ] **Explicit**: Every assumption states what would falsify it.
+- [ ] **Explicit**: Every abbreviation is expanded on first use.
+- [ ] **Explicit**: Non-goals explicitly state not just what is excluded, but why it is excluded.
