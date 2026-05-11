@@ -237,6 +237,7 @@ Models:
   gpt      - OpenAI GPT (requires OPENAI_API_KEY)
   gemini   - Google Gemini (requires GOOGLE_API_KEY)
   deepseek - DeepSeek (requires DEEPSEEK_API_KEY)
+  kimi     - Kimi (Moonshot) (requires KIMI_API_KEY)
 
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
