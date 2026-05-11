@@ -204,12 +204,12 @@ Shared terms used across Nexus documents.
 
 Used in reviews, bug tracking, and risk assessment:
 
-| Level | Definition | Example |
-|-------|-----------|---------|
-| **Critical** | Blocks acceptance or deployment. No workaround. | Security vulnerability, data loss bug |
-| **High** | Significant risk or effort required. Has workaround but painful. | Performance regression, missing error handling |
-| **Medium** | Noticeable issue, manageable workaround. | UI inconsistency, unclear error message |
-| **Low** | Cosmetic, negligible impact, or preference. | Typo, formatting inconsistency |
+| Level | Definition | Example | Justification Required |
+|-------|-----------|---------|----------------------|
+| **Critical** | Blocks acceptance or deployment. No workaround. | Security vulnerability, data loss bug | Why it blocks; what is the impact if shipped |
+| **High** | Significant risk or effort required. Has workaround but painful. | Performance regression, missing error handling | Why the risk is significant; what is the workaround |
+| **Medium** | Noticeable issue, manageable workaround. | UI inconsistency, unclear error message | Why it is noticeable; what is the workaround |
+| **Low** | Cosmetic, negligible impact, or preference. | Typo, formatting inconsistency | Brief note on why it is low |
 
 ### Branch Naming
 

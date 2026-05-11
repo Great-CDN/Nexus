@@ -318,25 +318,27 @@ node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
 - CI/CD 流水线中的自动化审查
 - 批量处理多个文件
 
-### 安全配置（必读）
+### Secure Credential Configuration (Required Reading)
 
-API keys 是敏感凭据。**绝对禁止**将它们写入项目目录的任何文件或提交到 git。
+API keys are sensitive secrets. **Never** write them into any file in the project directory or commit them to git.
 
-脚本支持两种安全的凭据加载方式：
+The script supports two secure credential loading methods:
 
-**方式 A：系统环境变量（推荐）**
+**Method A: System Environment Variables (Recommended)**
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 export OPENAI_API_KEY=sk-...
 export GOOGLE_API_KEY=...
+export DEEPSEEK_API_KEY=sk-...
+export KIMI_API_KEY=sk-...
 ```
 
-将上述命令加入你的 shell 配置文件（`~/.bashrc`、`~/.zshrc`、或 Windows 系统环境变量），使其持久化。环境变量不写入任何文件，最安全。
+Add these to your shell profile (`~/.bashrc`, `~/.zshrc`, or Windows system environment variables) to persist across sessions. Environment variables do not touch any file — the most secure option.
 
-**方式 B：用户级 env 文件**
+**Method B: User-Level Env File**
 
-如果你不想修改 shell 配置，或需要为不同项目使用不同的 key：
+If you prefer not to modify shell configuration, or need different keys per project:
 
 ```bash
 mkdir -p ~/.nexus
@@ -344,19 +346,21 @@ cat > ~/.nexus/cross-validate.env <<'EOF'
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 GOOGLE_API_KEY=...
+DEEPSEEK_API_KEY=sk-...
+KIMI_API_KEY=sk-...
 EOF
 chmod 600 ~/.nexus/cross-validate.env
 ```
 
-脚本会自动搜索 `~/.nexus/cross-validate.env` 和 `~/.config/nexus/cross-validate.env`。
+The script automatically searches `~/.nexus/cross-validate.env` and `~/.config/nexus/cross-validate.env`.
 
-**为什么不能在项目里放 `.env`？**
+**Why not a `.env` file in the project?**
 
--  `.gitignore` 可能不覆盖子目录中的 `.env`
--  项目目录可能被复制、打包、分享
--  一旦泄露，API key 可能被滥用产生高额费用
+- `.gitignore` may not cover `.env` in subdirectories.
+- Project directories may be copied, packaged, or shared.
+- If leaked, API keys can be abused, generating significant costs.
 
-如果脚本找不到凭据，它会输出明确的引导信息，告诉你去哪里配置。
+If the script cannot find credentials, it prints clear guidance on where to configure them.
 
 ### When to Use Automation
 

@@ -75,6 +75,8 @@ function showCredentialHelp(missingKeys) {
   console.error('  export OPENAI_API_KEY=sk-...');
   console.error('  export GOOGLE_API_KEY=...');
   console.error('  export DEEPSEEK_API_KEY=sk-...');
+  console.error('  export KIMI_API_KEY=sk-...');
+  console.error('  export KIMI_API_KEY=sk-...');
   console.error('  # Then run this script again.\n');
   console.error('Option 2 — User-level env file:');
   console.error('  Create one of these files (outside any git repo):');
@@ -85,6 +87,7 @@ function showCredentialHelp(missingKeys) {
   console.error('    OPENAI_API_KEY=sk-...');
   console.error('    GOOGLE_API_KEY=...');
   console.error('    DEEPSEEK_API_KEY=sk-...');
+  console.error('    KIMI_API_KEY=sk-...');
   console.error('  # Then run this script again.\n');
   console.error('Security note: Never commit API keys. Both options keep secrets');
   console.error('outside project directories.\n');
@@ -171,6 +174,27 @@ const PROVIDERS = {
       'Authorization': `Bearer ${apiKey}`,
     }),
   },
+  kimi: {
+    name: 'Kimi (Moonshot)',
+    host: 'api.moonshot.cn',
+    path: '/v1/chat/completions',
+    envKey: 'KIMI_API_KEY',
+    model: 'kimi-k2',
+    maxTokens: 4096,
+    buildRequest: (apiKey, content) => ({
+      model: PROVIDERS.kimi.model,
+      max_tokens: PROVIDERS.kimi.maxTokens,
+      messages: [
+        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
+        { role: 'user', content: content },
+      ],
+    }),
+    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
+    buildHeaders: (apiKey) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    }),
+  },
 };
 
 const REVIEW_SYSTEM_PROMPT = `You are an experienced senior software engineer conducting a technical review.
@@ -217,7 +241,8 @@ Models:
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
   node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/
-  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek`);
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek,kimi`);
 }
 
 // ---------------------------------------------------------------------------
@@ -355,7 +380,7 @@ async function main() {
   for (const model of args.models) {
     const provider = PROVIDERS[model];
     if (!provider) {
-      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek`);
+      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek, kimi`);
       process.exit(1);
     }
     const apiKey = process.env[provider.envKey];

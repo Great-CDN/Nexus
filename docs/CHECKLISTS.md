@@ -118,7 +118,7 @@ Run this before approving any Nexus output document (spec, design, task, review,
 - [ ] **Explicit**: Every decision includes the constraint or requirement that drove it.
 - [ ] **Explicit**: Error cases are described with the same detail as success paths.
 
-Also run the template-specific Quality Checklist for the artifact type (see the template file).
+Run the template-specific Quality Checklist for the artifact type (see the template file) **after** this universal checklist is complete.
 
 ---
 
