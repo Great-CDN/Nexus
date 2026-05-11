@@ -97,4 +97,6 @@ Nexus/
         SKILL.md
       update-context/
         SKILL.md
+      cross-validate/
+        SKILL.md
 ```

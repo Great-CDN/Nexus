@@ -260,49 +260,77 @@ Do not trust your memory to compare two model outputs. Use a structured format:
 
 ## Automated Cross-Validation
 
-Manual copy-paste between tools is error-prone and inefficient. Nexus provides `tools/cross-validate.js` — a zero-dependency Node.js script that automates the isolation and comparison steps.
+Manual copy-paste between tools is error-prone and inefficient. Nexus provides a two-layer automation: a **Claude Code Skill** for workflow guidance, and a **standalone script** for the actual API execution.
 
-### What It Does
+### Architecture: Skill + Script
 
-1. Reads your local artifact (spec, design, or code file).
-2. Sends it to multiple LLM APIs in **parallel** with the **same isolated review prompt**.
-3. Collects structured responses and generates a `CROSS_VALIDATION_REPORT.md`.
-4. The report includes a summary table + raw reviews from each model + a human decision checklist.
+```
+.claude/skills/cross-validate/SKILL.md   ← 集成层（引导、检查、解析）
+         │
+         │  调用
+         ▼
+tools/cross-validate.js                  ← 执行引擎（API 调用、报告生成）
+```
+
+**Skill 的职责**：询问文件和模型选择 → 检查环境变量 → 调用脚本 → 读取报告 → 帮助人类对比分析。
+
+**脚本的职责**：并行请求多个模型 API → 生成结构化 Markdown 报告。
+
+这个分层设计满足 Nexus 原则：
+- **Human Final Judgment**：人类显式触发 `/cross-validate`，AI 不自主决定何时审查。
+- **No Agent**：不是后台进程，不是自主编排，每一步人类可观测、可中断。
+- **Explicit**：提示模板硬编码在脚本中，可直接阅读、审计、修改。
+- **Isolation by construction**：脚本对每一个模型使用完全相同的中性提示，不可能意外泄露"这是 AI 生成的"。
 
 ### Usage
 
+#### 方式一：通过 Claude Code Skill（推荐）
+
+在 Claude Code 对话中触发：
+
+```
+/cross-validate
+```
+
+Claude 会引导你完成：
+1. 选择要审查的文件
+2. 选择审查模型（默认推荐 claude + gpt）
+3. 检查 API key 环境变量
+4. 执行脚本并等待结果
+5. 解析报告，用表格对比各模型的发现
+6. 列出问题供你做最终决策
+
+#### 方式二：直接运行脚本
+
 ```bash
-# Set API keys for the models you want to use
+# 设置 API key
 export ANTHROPIC_API_KEY=sk-ant-...
 export OPENAI_API_KEY=sk-...
 export GOOGLE_API_KEY=...
 
-# Run cross-validation on a design document
+# 审查设计文档
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
 
-# Run with all three models
+# 使用全部三个模型
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt,gemini
 
-# Output to a custom directory
+# 输出到自定义目录
 node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
 ```
 
-### Why This Fits Nexus
+直接运行脚本适用于：
+- 不使用 Claude Code 的环境
+- CI/CD 流水线中的自动化审查
+- 批量处理多个文件
 
-- **No framework**: It is a 250-line script, not an agent orchestration system.
-- **Explicit prompts**: The review prompt is hardcoded in the script. You can read it, audit it, and modify it.
-- **Human remains the integrator**: The script generates the report; the human reads it, compares findings, and decides.
-- **No hidden state**: Every API request and response is saved to the report file. Fully inspectable.
-- **Isolation by construction**: The script uses the same neutral prompt for every model. It is impossible to accidentally tell Model B that Model A wrote the artifact.
+### When to Use Automation
 
-### When to Use the Tool
-
-| Scenario | Recommendation |
-|----------|----------------|
-| Layer 1 (Review CV) on a design doc | **Use the tool**. Two models in parallel, human reads the report. |
-| Layer 2 (Generation CV) | **Do not use the tool**. Generation CV requires independent implementation, not review. Use separate sessions/tools. |
-| Layer 3 (Adversarial CV) | **Partial**. The tool runs review prompts, not adversarial prompts. For adversarial, run the tool, then manually prompt one model with an explicit adversarial role. |
-| Daily light workflow | **Skip**. Cross-validation is selective defense, not routine. |
+| 场景 | 推荐方式 |
+|------|---------|
+| Layer 1（审查交叉验证）on 设计文档 | **Skill 或脚本**。并行审查，人类读报告。 |
+| Layer 2（生成交叉验证） | **不要用工具**。需要独立实现，不是审查。用不同会话/工具分别实现。 |
+| Layer 3（对抗交叉验证） | **部分适用**。工具运行的是审查提示，非对抗提示。先用工具跑审查，再手动对一个模型施加显式对抗角色。 |
+| 日常 Light Workflow | **跳过**。交叉验证是选择性防御，不是例行公事。 |
 
 ### Fallback: Manual Cross-Validation
 
