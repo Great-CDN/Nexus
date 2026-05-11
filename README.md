@@ -32,6 +32,12 @@ It is not an AI agent framework, not a prompt collection, and not an autonomous 
 | `docs/templates/` | Reusable document templates (full + light) |
 | `CLAUDE.md` | Claude Code project context |
 
+## Tools
+
+| Tool | Purpose |
+|------|---------|
+| `tools/cross-validate.js` | Multi-model cross-validation script. Zero dependencies. |
+
 ## The Rules
 
 1. **Spec > Prompt** — Structured input reduces ambiguity. It does not eliminate AI variance, but it forces human clarity before generation begins.

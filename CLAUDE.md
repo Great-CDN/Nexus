@@ -40,6 +40,7 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 | `docs/templates/review.md` | When conducting a review |
 | `docs/templates/test-plan.md` | When planning tests |
 | `docs/templates/change-log.md` | When documenting a change |
+| `tools/cross-validate.js` | When running multi-model cross-validation |
 
 ## How to Use This Context
 
@@ -74,6 +75,8 @@ Nexus/
     WORKED_EXAMPLE.md
     CROSS_VALIDATION.md
     templates/
+  tools/
+    cross-validate.js      # Multi-model cross-validation script
       spec.md
       spec-light.md
       design.md

@@ -258,6 +258,63 @@ Do not trust your memory to compare two model outputs. Use a structured format:
 
 ---
 
+## Automated Cross-Validation
+
+Manual copy-paste between tools is error-prone and inefficient. Nexus provides `tools/cross-validate.js` — a zero-dependency Node.js script that automates the isolation and comparison steps.
+
+### What It Does
+
+1. Reads your local artifact (spec, design, or code file).
+2. Sends it to multiple LLM APIs in **parallel** with the **same isolated review prompt**.
+3. Collects structured responses and generates a `CROSS_VALIDATION_REPORT.md`.
+4. The report includes a summary table + raw reviews from each model + a human decision checklist.
+
+### Usage
+
+```bash
+# Set API keys for the models you want to use
+export ANTHROPIC_API_KEY=sk-ant-...
+export OPENAI_API_KEY=sk-...
+export GOOGLE_API_KEY=...
+
+# Run cross-validation on a design document
+node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
+
+# Run with all three models
+node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt,gemini
+
+# Output to a custom directory
+node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
+```
+
+### Why This Fits Nexus
+
+- **No framework**: It is a 250-line script, not an agent orchestration system.
+- **Explicit prompts**: The review prompt is hardcoded in the script. You can read it, audit it, and modify it.
+- **Human remains the integrator**: The script generates the report; the human reads it, compares findings, and decides.
+- **No hidden state**: Every API request and response is saved to the report file. Fully inspectable.
+- **Isolation by construction**: The script uses the same neutral prompt for every model. It is impossible to accidentally tell Model B that Model A wrote the artifact.
+
+### When to Use the Tool
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Layer 1 (Review CV) on a design doc | **Use the tool**. Two models in parallel, human reads the report. |
+| Layer 2 (Generation CV) | **Do not use the tool**. Generation CV requires independent implementation, not review. Use separate sessions/tools. |
+| Layer 3 (Adversarial CV) | **Partial**. The tool runs review prompts, not adversarial prompts. For adversarial, run the tool, then manually prompt one model with an explicit adversarial role. |
+| Daily light workflow | **Skip**. Cross-validation is selective defense, not routine. |
+
+### Fallback: Manual Cross-Validation
+
+If you do not have API keys or prefer not to use the script:
+
+1. Generate in Claude Code.
+2. Copy the artifact to ChatGPT / Gemini in a fresh browser tab.
+3. Use the neutral prompt from Step 3 above.
+4. Paste both reviews into `docs/templates/review.md` and compare manually.
+
+---
+
 ## Limitations
 
 Cross-validation is powerful but not magic:
