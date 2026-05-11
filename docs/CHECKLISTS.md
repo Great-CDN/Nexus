@@ -51,7 +51,7 @@ Run this for every completed task.
 - [ ] Tests pass.
 - [ ] No unused variables, imports, or dead code.
 - [ ] No console.log or debug code left in production code.
-- [ ] Human has read and understands the code (limit: 200 lines per review session; if larger, review in chunks).
+- [ ] Human has traced the primary execution path and primary error path (limit: 200 lines per review session; if larger, review in chunks).
 - [ ] Commit follows Conventional Commits format and references the task.
 
 ---

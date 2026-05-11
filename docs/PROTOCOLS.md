@@ -20,8 +20,7 @@ Every `PRODUCT_SPEC.md` must use `docs/templates/spec.md` and include these mand
 
 ### Spec Rules
 
-- **One spec per feature**. Do not bundle unrelated features.
-- **Spec changes must be explicit**. If reality demands change during Implementation, revise the spec with a new version, re-approve it, and only then update the code. Do not silently deviate from the approved spec.
+- **One spec per feature**. Do not bundle unrelated features. A single spec may span multiple implementation tasks; the boundary is "one coherent user-visible capability," not "one session."
 - **Specs are plain Markdown**. No diagrams required, but ASCII or linked diagrams are allowed.
 - **Acceptance criteria are the contract**. Code is done when all criteria are met, not when it "feels done".
 
@@ -308,8 +307,10 @@ Use for: small enhancements, UI tweaks, adding a field to a form, routine depend
 - **Requirements**: Use `docs/templates/spec-light.md`. One paragraph, 2-3 ACs maximum.
 - **Design**: Use `docs/templates/design-light.md`. One paragraph approach + interface sketch.
 - **Implementation**: One task, one session. No formal task template needed.
+  - Review standard: "Human has scanned the diff for obvious errors" (vs. full execution-path trace for Full Workflow).
+  - Automated checks (type check, lint, tests) still mandatory.
 - **Testing**: Manual verification + existing test suite still passes.
-- **Acceptance**: Quick verbal "looks good" is acceptable for truly trivial changes; written verdict for anything touching business logic.
+- **Acceptance**: Written verdict for anything touching business logic; verbal "looks good" permitted only for zero-business-logic changes (e.g., CSS color tweak).
 - **Snapshots**: Optional for implementation. Diff in commit message is sufficient.
 
 #### Hotfix

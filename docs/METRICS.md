@@ -12,15 +12,21 @@ Without measurement, you cannot distinguish between "this is working" and "this 
 
 **Definition**: Percentage of tasks that require revision after the initial implementation.
 
+Split into two sub-metrics for diagnostic clarity:
+
 ```
-Rework Rate = (Tasks with Request Changes verdict) / (Total tasks implemented) * 100%
+Upstream Rework Rate    = (Tasks requiring spec or design revision) / (Total tasks) * 100%
+Implementation Rework Rate = (Tasks requiring code fix only) / (Total tasks) * 100%
+Total Rework Rate       = Upstream + Implementation
 ```
 
-**Target**: < 20%
+**Target**: Total < 20%
 
 **Source**: Empirical heuristic based on industry code review data (Google CR Research 2018 reports ~15-25% rework rates for teams with mandatory review). Single-author AI-assisted projects may deviate significantly — treat 20% as a starting point and adjust based on your project's data.
 
-**What it tells you**: High rework means the spec or design was unclear before implementation started. Fix the upstream phase, not the implementation.
+**What it tells you**:
+- High *Upstream* Rework means the spec or design was unclear before implementation started. Fix the Requirements or Design phase.
+- High *Implementation* Rework means the coding process is unstable. Fix the context packaging or task sizing.
 
 **Collection**: Count from review verdicts in session snapshots.
 

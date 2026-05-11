@@ -76,7 +76,7 @@ function showCredentialHelp(missingKeys) {
   console.error('  export GOOGLE_API_KEY=...');
   console.error('  export DEEPSEEK_API_KEY=sk-...');
   console.error('  export KIMI_API_KEY=sk-...');
-  console.error('  export KIMI_API_KEY=sk-...');
+  console.error('  export NVIDIA_API_KEY=nvapi-...');
   console.error('  # Then run this script again.\n');
   console.error('Option 2 — User-level env file:');
   console.error('  Create one of these files (outside any git repo):');
@@ -88,6 +88,7 @@ function showCredentialHelp(missingKeys) {
   console.error('    GOOGLE_API_KEY=...');
   console.error('    DEEPSEEK_API_KEY=sk-...');
   console.error('    KIMI_API_KEY=sk-...');
+  console.error('    NVIDIA_API_KEY=nvapi-...');
   console.error('  # Then run this script again.\n');
   console.error('Security note: Never commit API keys. Both options keep secrets');
   console.error('outside project directories.\n');
@@ -195,6 +196,27 @@ const PROVIDERS = {
       'Authorization': `Bearer ${apiKey}`,
     }),
   },
+  nim: {
+    name: 'NVIDIA NIM',
+    host: () => process.env.NIM_HOST || 'integrate.api.nvidia.com',
+    path: '/v1/chat/completions',
+    envKey: 'NVIDIA_API_KEY',
+    model: 'meta/llama-3.1-405b-instruct',
+    maxTokens: 4096,
+    buildRequest: (apiKey, content) => ({
+      model: process.env.NIM_MODEL || 'meta/llama-3.1-405b-instruct',
+      max_tokens: 4096,
+      messages: [
+        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
+        { role: 'user', content: content },
+      ],
+    }),
+    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
+    buildHeaders: (apiKey) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    }),
+  },
 };
 
 const REVIEW_SYSTEM_PROMPT = `You are an experienced senior software engineer conducting a technical review.
@@ -238,12 +260,13 @@ Models:
   gemini   - Google Gemini (requires GOOGLE_API_KEY)
   deepseek - DeepSeek (requires DEEPSEEK_API_KEY)
   kimi     - Kimi (Moonshot) (requires KIMI_API_KEY)
+  nim      - NVIDIA NIM (requires NVIDIA_API_KEY)
 
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
   node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/
   node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek
-  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek,kimi`);
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek,nim`);
 }
 
 // ---------------------------------------------------------------------------
@@ -300,8 +323,9 @@ async function reviewWithProvider(providerKey, fileContent, apiKey) {
   const headers = provider.buildHeaders(apiKey);
   const pathValue = typeof provider.path === 'function' ? () => provider.path(apiKey) : provider.path;
 
+  const hostValue = typeof provider.host === 'function' ? provider.host() : provider.host;
   const start = Date.now();
-  const response = await postJSON(provider.host, pathValue, headers, payload);
+  const response = await postJSON(hostValue, pathValue, headers, payload);
   const elapsed = Date.now() - start;
 
   return {

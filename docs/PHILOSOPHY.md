@@ -236,6 +236,6 @@ When in doubt, apply these:
 
 1. If it cannot be reproduced from documents, it does not belong in the process.
 2. If the human is not making a decision, the process is too automated.
-3. If AI is doing something you do not understand, stop and review.
+3. If you cannot explain the purpose of every AI-generated action in the last 15 minutes, the process has violated Principle #2. Stop and revert.
 4. If a template is not being used, delete it or fix it.
 5. If context exceeds what can be explicitly loaded, the scope is too large.
