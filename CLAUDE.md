@@ -14,7 +14,7 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 2. **Workflow > Chat** — Each session serves one phase and one task. Phases are contracts with inputs, outputs, validation criteria, and exit conditions.
 3. **Review > Generation** — Automate what machines can check (types, lint, tests, security). Human review is for architecture, business logic, and maintainability.
 4. **Explicit Context > Implicit Memory** — Load context explicitly at session start. AI has no memory and a finite context window.
-5. **Small Context > Large Context** — Smaller scoped tasks produce more stable outputs. If context exceeds 800 lines, split the task.
+5. **Small Context > Large Context** — Smaller scoped tasks produce more stable outputs. If mixed-content context exceeds 800 lines, split the task. For pure prose or large-codebase work, follow `docs/SCALE.md` instead of applying a single universal line threshold.
 6. **Human Final Judgment** — AI proposes; human decides. This prevents the gradual erosion of human judgment from unexamined AI output.
 
 ## Document Index

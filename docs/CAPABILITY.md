@@ -70,7 +70,16 @@ AI can propose options and tradeoffs, but the human must decide.
 
 **Why**: AI does not understand business constraints, team skills, operational costs, or strategic direction.
 
-**Rule**: AI presents 2-3 options with pros/cons. Human decides and documents the rationale.
+**Rule**:
+- AI presents 2-3 concrete options.
+- Each option should include pros/cons, key constraints, and likely failure modes.
+- AI may recommend a preferred option, but must not present that recommendation as a final decision.
+- Human selects the option and documents the rationale in the design artifact.
+
+### 1.1 Decision Ownership
+
+For architecture-related tasks, AI may shape the comparison space, but it must not collapse the comparison into a single authoritative answer.
+Final architecture ownership remains with the human.
 
 ### 2. Database Schema Design
 
