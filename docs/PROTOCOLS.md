@@ -60,6 +60,8 @@ Specs evolve. Version management prevents "which spec am I building against?" co
 - **v1.1, v1.2** — Minor revisions (clarifications, typo fixes, additional examples) that do not change scope or acceptance criteria meaning.
 - **v2.0** — Major revision: scope changes, new acceptance criteria, removed non-goals, or altered assumptions. Any in-progress implementation tasks must be re-evaluated against the new version.
 
+**Grey area rule**: If a revision during Design changes how an acceptance criterion would be verified — even if the criterion's text is unchanged — it is a v2.0 revision. If it only adds examples or corrects typos without altering any possible interpretation, it is v1.1. When in doubt, choose v2.0.
+
 **When to create a new version**:
 - Before Design phase starts: spec is v1.0.
 - During Design: if the spec needs revision to make design possible, bump to v1.1.
@@ -92,7 +94,7 @@ When starting a session for a task, provide:
 ### Context Loading Rules
 
 - **Paste, do not reference by name**. Saying "use the same pattern as UserService" is insufficient. Paste the relevant code.
-- **Keep it under 800 lines ideally, 1200 lines absolutely**. If context exceeds 800 lines, you are in the warning zone — the task should probably be split. If it exceeds 1200 lines, it must be split. These numbers are heuristics based on typical token density, not hard limits. For a rough token estimate, run `node tools/count-tokens.js <file>`.
+- **Keep it under 800 lines ideally, 1200 lines absolutely**. If context exceeds 800 lines, you are in the warning zone — the task should probably be split. If it exceeds 1200 lines, it must be split. See `docs/PROTOCOLS.md` §Threshold Classification for limit classification. For a rough token estimate, run `node tools/count-tokens.js <file>`.
 - **Repeat critical constraints**. If a constraint matters, state it explicitly even if it is in the spec.
 - **End context with the instruction**. The last thing AI reads should be what to do.
 
@@ -398,7 +400,7 @@ When an AI API call fails, classify before acting:
 
 | Error Type | Examples | Action |
 |------------|----------|--------|
-| **Transient** | Network timeout, 5xx server error, rate limit (429) | Retry with exponential backoff: 1s, 2s, 4s. Max 3 attempts. If all fail, treat as session interruption. |
+| **Transient** | Network timeout, 5xx server error, rate limit (429) | Retry with exponential backoff + jitter: base delays 1s, 2s, 4s, each multiplied by a random value in [0.5, 1.5). Max 3 attempts. If all fail, treat as session interruption. |
 | **Hard limit** | Context window exceeded, quota/billing exhausted, session time limit, auth failure | Do not retry. Stop immediately. Follow Session Recovery Protocol. |
 | **Client error** | Invalid prompt format, malformed tool call | Fix the input and retry once. If it fails again, treat as session interruption. |
 
