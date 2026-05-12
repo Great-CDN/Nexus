@@ -143,7 +143,7 @@ Prefer:
 - Isolated tasks
 - Explicit boundaries
 
-**Implication**: If your context package exceeds 800 lines, the task is too large and should be split. 1200 lines is the absolute maximum for mixed code + prose. Pure prose documents can be larger — up to ~2000 lines — because prose has lower token density per line. See `docs/SCALE.md` for the full breakdown. If your module contract exceeds 150 lines, the module is too large. Split it. Small scope is not just a preference — it is a stability mechanism.
+**Implication**: Context package size limits are defined in `docs/protocols/threshold-classification.md`. As a rule of thumb: if your context package exceeds the soft limit, the task is too large and should be split. See `docs/SCALE.md` for the full token-density rationale. If your module contract exceeds 150 lines, the module is too large. Split it. Small scope is not just a preference — it is a stability mechanism.
 
 ## Anti-Goals
 

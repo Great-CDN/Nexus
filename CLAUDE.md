@@ -23,7 +23,8 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 |----------|-------------------|
 | `docs/PHILOSOPHY.md` | When explaining why a rule exists |
 | `docs/WORKFLOWS.md` | When determining what phase we are in |
-| `docs/PROTOCOLS.md` | When defining how to communicate or format artifacts |
+| `docs/PROTOCOLS.md` | Protocol directory and Rule Priority table |
+| `docs/protocols/*` | Individual protocol files (spec format, context packaging, review, etc.) |
 | `docs/CHECKLISTS.md` | At every stop point |
 | `docs/EXPLORATION.md` | When requirements are unclear and exploration is needed |
 | `docs/CAPABILITY.md` | When assessing whether AI can handle a specific task |
@@ -71,6 +72,18 @@ Nexus/
     PHILOSOPHY.md
     WORKFLOWS.md
     PROTOCOLS.md
+    protocols/
+      spec-format.md
+      context-packaging.md
+      prompt.md
+      review.md
+      memory.md
+      commit.md
+      session.md
+      triage.md
+      artifact-quality.md
+      threshold-classification.md
+      definitions.md
     CHECKLISTS.md
     BOUNDARY_CONDITIONS.md
     CAPABILITY.md

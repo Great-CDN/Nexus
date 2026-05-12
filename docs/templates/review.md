@@ -48,7 +48,7 @@
 |----------|-------|----------|------------|
 | Critical / High / Medium / Low | <Description> | <File:line> | <Fix / Accept / Defer> |
 
-See `docs/PROTOCOLS.md` §Definitions for severity level definitions.
+See `docs/protocols/definitions.md` for severity level definitions.
 
 ## Technical Debt
 

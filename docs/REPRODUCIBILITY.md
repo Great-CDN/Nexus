@@ -77,7 +77,7 @@ Record these in the session's `context.md` under an `Environment` section.
 
 - **Model updates are opaque**. Anthropic may update a model without changing its name. You cannot lock this.
 - **Temperature is usually not exposed**. Claude Code does not typically let you set temperature.
-- **Context window truncation is invisible**. When context exceeds the limit, the model silently truncates. This is why the "under 1200 lines absolute maximum" rule exists — it is a heuristic aligned with the Context Packaging Protocol, not a guarantee. See `docs/PROTOCOLS.md` §Context Packaging Protocol for the exact thresholds.
+- **Context window truncation is invisible**. When context exceeds the limit, the model silently truncates. This is why the context packaging line limits exist — they are heuristics aligned with the Context Packaging Protocol, not a guarantee. See `docs/protocols/context-packaging.md` and `docs/protocols/threshold-classification.md` for the exact thresholds.
 
 **Implication**: Reproducibility is *probabilistic*, not *deterministic*. The goal is to maximize the probability of consistent output, not to guarantee it.
 

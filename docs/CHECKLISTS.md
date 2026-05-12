@@ -129,7 +129,7 @@ Run this before approving any Nexus output document (spec, design, task, review,
 - [ ] **Complete**: Boundaries (preconditions, postconditions) are explicit for every rule or process.
 - [ ] **Complete**: No orphaned references; every cross-reference points to a specific section, file, or commit.
 - [ ] **Simple**: One idea per paragraph; comparative data is in tables.
-- [ ] **Simple**: No redundancy; no decorative language; artifact is under 800 lines.
+- [ ] **Simple**: No redundancy; no decorative language; artifact is within its content-type line limit.
 - [ ] **Explicit**: Abbreviations expanded on first use; implicit assumptions are surfaced.
 - [ ] **Explicit**: Every decision includes the constraint or requirement that drove it.
 - [ ] **Explicit**: Error cases are described with the same detail as success paths.
@@ -150,4 +150,4 @@ Run this at the start of every AI session.
 - [ ] Relevant existing code is pasted (types, interfaces, patterns).
 - [ ] Hard constraints are stated explicitly.
 - [ ] Single instruction for this session is the last item.
-- [ ] Context fits within 1200 lines absolute maximum, ideally under 800 lines (or task is split).
+- [ ] Context fits within the limit defined in `docs/protocols/threshold-classification.md` (or task is split).
