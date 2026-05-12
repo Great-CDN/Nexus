@@ -17,7 +17,7 @@ Traceability in Nexus does not mean "AI produces identical token sequences every
 
 ### 1. State Snapshot
 
-A state snapshot is a frozen record of everything needed to reproduce a session. It is stored alongside the project, not in AI memory.
+A state snapshot is a frozen record of everything needed to trace a session. It is stored alongside the project, not in AI memory.
 
 #### What Goes Into a Snapshot
 
@@ -26,19 +26,19 @@ For every session, record:
 ```
 sessions/
   YYYY-MM-DD-feature-name/
-    01-requirements/
+    02-specify/
       context.md          # The context package loaded at session start
       spec-v1.md          # The spec as it existed at session start
       output.md           # AI output (if text)
       diff.patch          # Code changes (if any)
       verdict.md          # Human review verdict
-    02-design/
+    03-design/
       context.md
       spec-v1.md          # Spec referenced (copy, not link)
       design-v1.md
       output.md
       verdict.md
-    03-implementation/
+    04-execute/
       context.md
       spec-v1.md
       design-v1.md
@@ -79,7 +79,7 @@ Record these in the session's `context.md` under an `Environment` section.
 - **Temperature is usually not exposed**. Claude Code does not typically let you set temperature.
 - **Context window truncation is invisible**. When context exceeds the limit, the model silently truncates. This is why the context packaging line limits exist — they are heuristics aligned with the Context Packaging Protocol, not a guarantee. See `docs/protocols/context-packaging.md` and `docs/protocols/threshold-classification.md` for the exact thresholds.
 
-**Implication**: Reproducibility is *probabilistic*, not *deterministic*. The goal is to maximize the probability of consistent output, not to guarantee it.
+**Implication**: Traceability does not imply reproducibility. The goal is to preserve a complete audit trail, not to guarantee identical output on replay.
 
 ### 3. Output Validation
 
@@ -151,5 +151,5 @@ The goal is auditability, not bureaucracy. If the cost of the snapshot exceeds t
 ## Anti-Patterns
 
 - **Relying on conversation history**: "Claude should remember from yesterday" — no. The snapshot is the memory.
-- **Moving specs without versioning**: Editing a spec in place destroys the ability to reproduce past sessions.
+- **Moving specs without versioning**: Editing a spec in place destroys the ability to trace past sessions.
 - **Skipping verdicts**: A session without a verdict is unfinished work, not a completed step.

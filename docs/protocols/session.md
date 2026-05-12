@@ -17,6 +17,12 @@ Do not repeat the context packaging rules here — they are defined in the Conte
 3. If changes needed, human provides specific feedback, not "fix it".
 4. Repeat until artifact passes review.
 
+**Loop exit conditions**:
+- **Normal**: artifact passes review → proceed to Session End.
+- **Spec ambiguity found**: after two iterations, the AI still misunderstands the requirement → stop the session, revise the spec, start a new session.
+- **Fallback Rule triggered**: AI produces structurally incorrect code twice for the same task → stop the session, switch to human implementation per `docs/CAPABILITY.md` §The Fallback Rule.
+- **Human fatigue**: if a single task has gone through more than 3 review cycles without converging → stop, record the blocker, and escalate to spec or design revision.
+
 ### Session End
 
 1. Human commits the change.

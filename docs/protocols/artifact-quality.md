@@ -60,15 +60,12 @@ The document must flow logically. A reader should never wonder "why am I reading
 
 ### Quality Checklist (Universal)
 
-Before any artifact is marked complete, run this checklist:
+Before any artifact is marked complete, run `CHECKLIST: Artifact Quality` in `docs/CHECKLISTS.md`. That checklist contains the operational verification items for all five dimensions.
 
-- [ ] **Accurate**: No vague qualifiers; named references are exact; assumptions are falsifiable; metrics have units.
-- [ ] **Complete**: Five Ws derivable; boundaries stated; alternatives recorded; no orphaned references; open questions owned.
-- [ ] **Simple**: One idea per paragraph; tables for comparisons; no redundancy; within line limits; no decorative language.
-- [ ] **Explicit**: Abbreviations expanded; assumptions surfaced; decisions justified; numbers sourced; errors described in full.
-- [ ] **Coherent**: 
-  - [ ] Redundancy test passed (no paragraph can be deleted without loss).
-  - [ ] Transition test passed (every adjacent pair has explicit logical relationship).
-  - [ ] Sequence test passed (paragraph first-sentences form a complete reasoning chain).
+The three operational tests below are the definitive verification method for the **Coherent** dimension and may also be applied to any artifact regardless of type:
 
-If any item fails, the artifact is incomplete. Revise and re-check.
+- **Redundancy test**: Remove any single paragraph. Does the document's purpose remain fully expressible? If yes, the paragraph is redundant — delete it or merge it.
+- **Transition test**: Read the last sentence of paragraph N and the first sentence of paragraph N+1. Is the logical relationship explicit (cause, contrast, elaboration, example)? If not, add a transitional sentence.
+- **Sequence test**: Extract the first sentence of every paragraph into a numbered list. Read the list in order. Does it form a complete reasoning chain from premise to conclusion? If not, reorder paragraphs or add bridging content.
+
+If any dimension fails, the artifact is incomplete. Revise and re-check.

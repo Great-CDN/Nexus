@@ -110,12 +110,7 @@ The MVP is the smallest set of features that delivers a complete user story. Be 
 - No acceptance criterion uses vague words ("good", "fast", "user-friendly")
 
 ### Exit Conditions
-Run **CHECKLIST: Specify** from `docs/CHECKLISTS.md`.
-
-Do not proceed to Design until:
-- [ ] Spec has explicit scope and non-goals
-- [ ] Every acceptance criterion is verifiable
-- [ ] Human has stated explicit approval
+Run **CHECKLIST: Specify** from `docs/CHECKLISTS.md`. Do not proceed to Design until it passes.
 
 ### AI Role
 - Structure the spec
@@ -164,13 +159,7 @@ Turn the spec into an implementable plan.
 - No single task exceeds 2 hours of estimated work
 
 ### Exit Conditions
-Run **CHECKLIST: Design** from `docs/CHECKLISTS.md`.
-
-Do not proceed to Execute until:
-- [ ] Design satisfies all acceptance criteria
-- [ ] Interface contracts are defined
-- [ ] Task breakdown covers the full spec
-- [ ] Human has confirmed every interface contract is understood
+Run **CHECKLIST: Design** from `docs/CHECKLISTS.md`. Do not proceed to Execute until it passes.
 
 ### AI Role
 - Propose architecture options with tradeoffs
@@ -218,13 +207,7 @@ Implement one bounded task at a time.
 - Human can explain what every changed line does
 
 ### Exit Conditions
-Run **CHECKLIST: Execute** from `docs/CHECKLISTS.md` per task.
-
-Do not mark a task complete until:
-- [ ] Code matches the design
-- [ ] Tests cover the acceptance criteria for this task
-- [ ] Human has traced the primary execution path and primary error path
-- [ ] Commit is made with conventional commit message
+Run **CHECKLIST: Execute** from `docs/CHECKLISTS.md` per task. Do not mark a task complete until it passes.
 
 ### When AI Cannot Implement the Task
 
@@ -290,13 +273,7 @@ Confirm that the work is actually correct.
 - Every acceptance criterion has at least one verification method
 
 ### Exit Conditions
-Run **CHECKLIST: Verify** from `docs/CHECKLISTS.md`.
-
-Do not proceed to Decide until:
-- [ ] All unit tests pass
-- [ ] Integration tests pass for critical paths
-- [ ] Manual verification covers UI/UX acceptance criteria
-- [ ] No critical or high bugs remain
+Run **CHECKLIST: Verify** from `docs/CHECKLISTS.md`. Do not proceed to Decide until it passes.
 
 ### AI Role
 - Run automated tests
@@ -348,13 +325,7 @@ Close the loop and record the decision.
 - Human has verified critical paths manually
 
 ### Exit Conditions
-Run **CHECKLIST: Decide** from `docs/CHECKLISTS.md`.
-
-Do not deploy until:
-- [ ] Implementation matches the approved spec
-- [ ] All acceptance criteria are verified
-- [ ] No critical technical debt introduced
-- [ ] Human makes explicit go decision
+Run **CHECKLIST: Decide** from `docs/CHECKLISTS.md`. Do not deploy until it passes.
 
 **Definition**: "Deploy" means **merge to the main branch**. Production release is a separate operational concern.
 
