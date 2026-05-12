@@ -4,7 +4,7 @@ These checklists are the stop points defined in `docs/WORKFLOWS.md`. Do not proc
 
 ---
 
-## CHECKLIST: Requirements
+## CHECKLIST: Specify
 
 Run this before approving a `PRODUCT_SPEC.md`.
 
@@ -53,7 +53,7 @@ Run this before approving a `DESIGN_DOC.md`.
 
 ---
 
-## CHECKLIST: Implementation
+## CHECKLIST: Execute
 
 Run this for every completed task.
 
@@ -71,9 +71,9 @@ Run this for every completed task.
 
 ---
 
-## CHECKLIST: Testing
+## CHECKLIST: Verify
 
-Run this before proceeding to Acceptance.
+Run this before proceeding to Decide.
 
 - [ ] All unit tests pass.
 - [ ] Integration tests pass for critical paths.
@@ -89,7 +89,7 @@ Run this before proceeding to Acceptance.
 
 ---
 
-## CHECKLIST: Acceptance
+## CHECKLIST: Decide
 
 Run this before declaring a feature complete.
 

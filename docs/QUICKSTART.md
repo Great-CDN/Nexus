@@ -11,9 +11,9 @@ Get from zero to your first Nexus session in 5 minutes.
 
 At the start of **every** session, load the context package:
 
-1. State the phase: "We are in [Requirements / Design / Implementation / Testing / Acceptance / Maintenance]."
+1. State the phase: "We are in [Discover / Specify / Design / Execute / Verify / Decide / Maintenance]."
 2. Provide the spec path (e.g., `docs/specs/auth-refactor.SPEC.md`).
-3. Provide the design path if past Requirements.
+3. Provide the design path if past Specify.
 4. Paste relevant code (types, interfaces, existing patterns).
 
 Do not say "as we discussed earlier." Paste the text.
@@ -35,30 +35,33 @@ Hotfix = bug report → minimal fix → verify → change log.
 ### Full Workflow — First Feature
 
 ```
-Phase 1: Requirements
+Phase 1: Discover
+  → Clarify the problem and scope boundary.
+
+Phase 2: Specify
   → Use template: docs/templates/spec.md
   → Output: PRODUCT_SPEC.md
-  → Stop: CHECKLIST: Requirements (docs/CHECKLISTS.md)
+  → Stop: CHECKLIST: Specify (docs/CHECKLISTS.md)
 
-Phase 2: Design
+Phase 3: Design
   → Use template: docs/templates/design.md
   → Output: DESIGN_DOC.md
   → Stop: CHECKLIST: Design
 
-Phase 3: Implementation
+Phase 4: Execute
   → One task per session. Use docs/templates/task.md.
   → Commit after every task (Conventional Commits).
-  → Stop: CHECKLIST: Implementation per task
+  → Stop: CHECKLIST: Execute per task
 
-Phase 4: Testing
+Phase 5: Verify
   → Use template: docs/templates/test-plan.md
-  → Stop: CHECKLIST: Testing
+  → Stop: CHECKLIST: Verify
 
-Phase 5: Acceptance
+Phase 6: Decide
   → Use template: docs/templates/review.md
-  → Stop: CHECKLIST: Acceptance
+  → Stop: CHECKLIST: Decide
 
-Phase 6: Maintenance
+Maintenance
   → Use template: docs/templates/change-log.md
   → Stop: CHECKLIST: Maintenance
 ```

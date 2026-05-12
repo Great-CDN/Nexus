@@ -1,13 +1,13 @@
 ---
 name: init-spec
-description: "Initialize a new product specification from the Nexus spec template. Use when starting the Requirements phase for a new feature or change."
+description: "Initialize a new product specification from the Nexus spec template. Use when starting the Specify phase for a new feature or change."
 disable-model-invocation: true
 allowed-tools: Read, Write
 ---
 
 ## When to Use
 
-- Starting the Requirements phase for a new feature
+- Starting the Specify phase for a new feature
 - A change request needs to be formally scoped
 - The user says "we need to build X" or "let's spec this out"
 

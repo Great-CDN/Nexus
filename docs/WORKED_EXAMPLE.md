@@ -12,7 +12,7 @@ In GreatCDN, users configure CDN behavior through rules (e.g., "if path matches 
 
 ---
 
-## Phase 1: Requirements
+## Phase 1: Specify
 
 ### Output: `PRODUCT_SPEC.md`
 
@@ -210,14 +210,14 @@ sessions/2026-05-11-rule-editor/
 
 ---
 
-## Phase 3: Implementation
+## Phase 3: Execute
 
 ### Session: T1 — Create Rule types and validation utilities
 
 #### Context Package
 
 ```
-Phase: Implementation
+Phase: Execute
 Task: T1
 
 Spec (relevant):
@@ -294,7 +294,7 @@ T2 through T9 follow the same pattern: one session per task, explicit context, r
 
 ---
 
-## Phase 4: Testing
+## Phase 4: Verify
 
 ### Output: `TEST_PLAN.md`
 
@@ -360,12 +360,12 @@ sessions/2026-05-11-rule-editor/
 
 ---
 
-## Phase 5: Acceptance
+## Phase 5: Decide
 
 ### Output: `ACCEPTANCE_REPORT.md`
 
 ```markdown
-# Acceptance: Rule Editor
+# Decide: Rule Editor
 
 ## Spec Alignment
 
@@ -472,5 +472,5 @@ sessions/2026-05-18-rule-editor-import-fix/
 1. **Every phase produces a document**. There is no "just know" state.
 2. **Snapshots are copies, not links**. The Design snapshot contains a copy of the spec, ensuring the design context is frozen.
 3. **Reviews are specific**. T1's review identified a real issue (hardcoded English) with a specific fix target (T4).
-4. **Acceptance has evidence**. Screenshots, recordings, and profiler data — not just "it works."
+4. **Decide has evidence**. Screenshots, recordings, and profiler data — not just "it works."
 5. **Maintenance references the original spec**. Even a one-line fix connects back to the design and acceptance criteria.

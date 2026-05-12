@@ -1,14 +1,14 @@
 ---
 name: verify-tests
-description: "Verify that tests cover the acceptance criteria from the spec. Use during the Testing phase after automated tests are written."
+description: "Verify that tests cover the acceptance criteria from the spec. Use during the Verify phase after automated tests are written."
 disable-model-invocation: true
 allowed-tools: Read, Grep, Bash
 ---
 
 ## When to Use
 
-- During the Testing phase
-- After tests are written but before Acceptance
+- During the Verify phase
+- After tests are written but before Decide
 - The user asks "do we have enough tests?" or "check test coverage"
 
 ## Process

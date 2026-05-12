@@ -35,7 +35,7 @@ Types:
 
 ### Signed Commits (Recommended)
 
-Git history is the audit trail. Unsigned commits can be forged. For Acceptance-phase merges to `main`, use GPG or SSH commit signing.
+Git history is the audit trail. Unsigned commits can be forged. For Decide-phase merges to `main`, use GPG or SSH commit signing.
 
 ```bash
 # Enable SSH signing (simpler than GPG)

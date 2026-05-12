@@ -49,7 +49,7 @@ It contains documents, templates, protocols, and skills that govern how AI and h
 **For new users**: Direct them to `docs/QUICKSTART.md` first.
 
 When the user starts a session:
-1. Ask what phase we are in (Requirements, Design, Implementation, Testing, Acceptance, Maintenance).
+1. Ask what phase we are in (Discover, Specify, Design, Execute, Verify, Decide, Maintenance).
 2. Ask for the relevant spec and design references.
 3. Load the context package per `docs/PROTOCOLS.md` Context Packaging Protocol.
 4. Confirm understanding before generating anything.

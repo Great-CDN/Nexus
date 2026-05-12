@@ -15,7 +15,7 @@ allowed-tools: Read, Write
 ## Process
 
 1. Ask the user for:
-   - Current phase (Requirements / Design / Implementation / Testing / Acceptance / Maintenance)
+   - Current phase (Discover / Specify / Design / Execute / Verify / Decide / Maintenance)
    - Spec path and version
    - Design path and version (if applicable)
    - Task ID from design breakdown (if applicable)

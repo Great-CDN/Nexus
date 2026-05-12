@@ -34,7 +34,7 @@ Specs evolve. Version management prevents "which spec am I building against?" co
 - Before Design phase starts: spec is v1.0.
 - During Design: if the spec needs revision to make design possible, bump to v1.1.
 - After Design is approved: do not revise the spec without creating a new version. The approved design was built against a specific spec version.
-- During Implementation: if new information requires spec changes, create a new version, re-approve the spec, and evaluate whether ongoing tasks need rework.
+- During Execute: if new information requires spec changes, create a new version, re-approve the spec, and evaluate whether ongoing tasks need rework.
 
 **Anchoring implementation tasks**: Snapshots copy the spec, not link it. A task snapshot always contains `spec-vX.Y.md` — the exact version the task was built against. This makes version drift visible, not hidden.
 

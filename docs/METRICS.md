@@ -15,9 +15,9 @@ Without measurement, you cannot distinguish between "this is working" and "this 
 Split into two sub-metrics for diagnostic clarity:
 
 ```
-Upstream Rework Rate    = (Tasks requiring spec or design revision) / (Total tasks) * 100%
-Implementation Rework Rate = (Tasks requiring code fix only) / (Total tasks) * 100%
-Total Rework Rate       = Upstream + Implementation
+Upstream Rework Rate = (Tasks requiring spec or design revision) / (Total tasks) * 100%
+Execute Rework Rate  = (Tasks requiring code fix only) / (Total tasks) * 100%
+Total Rework Rate    = Upstream + Execute
 ```
 
 **Target**: Total < 20%
@@ -25,8 +25,8 @@ Total Rework Rate       = Upstream + Implementation
 **Source**: Empirical heuristic based on industry code review data (Google CR Research 2018 reports ~15-25% rework rates for teams with mandatory review). Single-author AI-assisted projects may deviate significantly — treat 20% as a starting point and adjust based on your project's data.
 
 **What it tells you**:
-- High *Upstream* Rework means the spec or design was unclear before implementation started. Fix the Requirements or Design phase.
-- High *Implementation* Rework means the coding process is unstable. Fix the context packaging or task sizing.
+- High *Upstream* Rework means the spec or design was unclear before execution started. Fix the Specify or Design phase.
+- High *Execute* Rework means the coding process is unstable. Fix the context packaging or task sizing.
 
 **Collection**: Count from review verdicts in session snapshots. Light Workflow tasks are excluded from this metric because snapshots are optional for Light Workflow.
 
@@ -46,7 +46,7 @@ Spec Stability = (Spec versions at acceptance) / (Spec versions at design start)
 
 **Source**: Ideal target. Acceptable threshold is an empirical heuristic from software engineering practice.
 
-**What it tells you**: Values above 1.2 indicate requirements were not well-understood before design. Slow down the Requirements phase.
+**What it tells you**: Values above 1.2 indicate the spec was not well-understood before design. Slow down the Specify phase.
 
 **Collection**: Count spec versions in `sessions/` directory.
 
@@ -82,7 +82,7 @@ Bug Escape Rate = (Bugs found post-acceptance) / (Features shipped)
 
 **Source**: Empirical heuristic for non-critical projects. Safety-critical systems should target near-zero escapes.
 
-**What it tells you**: Escaped bugs mean the Testing or Acceptance checklist was ineffective. Review the checklists.
+**What it tells you**: Escaped bugs mean the Verify or Decide checklist was ineffective. Review the checklists.
 
 **Collection**: Track in maintenance snapshots.
 
@@ -110,16 +110,17 @@ Reload Frequency = (Sessions restarted due to context issues) / (Total sessions)
 
 | Phase | Target | Warning |
 |-------|--------|---------|
-| Requirements | 10-30 min | > 1 hour |
+| Discover | 10-20 min | > 30 min |
+| Specify | 10-30 min | > 1 hour |
 | Design | 20-60 min | > 2 hours |
-| Implementation (per task) | 30-120 min | > 2 hours |
-| Testing | 20-40 min | > 1 hour |
-| Acceptance | 10-20 min | > 30 min |
+| Execute (per task) | 30-120 min | > 2 hours |
+| Verify | 20-40 min | > 1 hour |
+| Decide | 10-20 min | > 30 min |
 | Maintenance (per fix) | 15-30 min | > 1 hour |
 
 **What it tells you**: Excessive dwell time in any phase indicates the scope is too large or the phase is not well-defined.
 
-**Note on scope**: These targets apply to a feature of typical scope (3-7 implementation tasks). A feature with significantly more tasks will scale proportionally; use the per-task Implementation target to estimate.
+**Note on scope**: These targets apply to a feature of typical scope (3-7 execution tasks). A feature with significantly more tasks will scale proportionally; use the per-task Execute target to estimate.
 
 **Collection**: Self-reported or derived from session timestamps.
 
@@ -139,7 +140,7 @@ Cognitive Load Ratio = (Human active time) / (Total session time) * 100%
 
 **Collection**: Estimate per session. Human active time = reading + reviewing + deciding + writing context.
 
-**Note on review limits**: The Implementation checklist limits review to 200 lines or 30 minutes per chunk, whichever comes first. For sessions approaching the 120-minute maximum, split large reviews across multiple sessions to keep Cognitive Load Ratio within target.
+**Note on review limits**: The Execute checklist limits review to 200 lines or 30 minutes per chunk, whichever comes first. For sessions approaching the 120-minute maximum, split large reviews across multiple sessions to keep Cognitive Load Ratio within target.
 
 ## Measurement Cadence
 
@@ -158,10 +159,10 @@ Cognitive Load Ratio = (Human active time) / (Total session time) * 100%
 | Symptom | Likely Cause | Action |
 |---------|-------------|--------|
 | High rework, high spec stability | Design is unclear | Strengthen Design checklist |
-| High rework, low spec stability | Requirements were wrong | Slow down Requirements phase |
+| High rework, low spec stability | Specify was wrong | Slow down Specify phase |
 | Low first-pass, high reload | Context packaging is bad | Review Context Packaging Protocol |
-| High bug escape | Testing checklist is weak | Add more edge case checks |
-| Long dwell in Implementation | Tasks are too large | Break down tasks further |
+| High bug escape | Verify checklist is weak | Add more edge case checks |
+| Long dwell in Execute | Tasks are too large | Break down tasks further |
 | Low cognitive load | Human is not reviewing | Enforce Review protocol |
 | High cognitive load | AI is not generating useful output | Improve context quality |
 
@@ -185,7 +186,7 @@ Before applying Nexus, establish a baseline:
 2. Track these manually:
    - How many features did you ship?
    - How many bugs were found after shipping?
-   - How many times did you rewrite code because requirements changed mid-implementation?
+   - How many times did you rewrite code because spec changed mid-execution?
    - How stressed did you feel about code quality (1-10)?
 
 This is your baseline. Do not skip this. Without a baseline, you cannot know if Nexus improved anything.
@@ -208,7 +209,7 @@ Compare Month 3 metrics to your baseline:
 | Metric | Baseline | Month 3 | Improvement? |
 |--------|----------|---------|--------------|
 | Bugs found post-shipping | X | Y | Y < X? |
-| Rewrites due to unclear requirements | X | Y | Y < X? |
+| Rewrites due to unclear spec | X | Y | Y < X? |
 | Time from "start feature" to "ship feature" | X | Y | Comparable or better? |
 | Subjective code quality confidence | X | Y | Y > X? |
 

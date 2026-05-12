@@ -1,6 +1,6 @@
 ---
 name: init-design
-description: "Initialize a technical design document from an approved spec. Use when entering the Design phase after Requirements are complete."
+description: "Initialize a technical design document from an approved spec. Use when entering the Design phase after Specify is complete."
 disable-model-invocation: true
 allowed-tools: Read, Write
 ---

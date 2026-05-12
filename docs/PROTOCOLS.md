@@ -2,7 +2,9 @@
 
 Protocols define how humans and AI communicate within Nexus. They are rules, not suggestions. Violating a protocol means the output is invalid until corrected.
 
-Each protocol lives in its own file under `docs/protocols/`. This file contains the Rule Priority table and a directory index.
+This file is the **arbitration center** for Nexus. When rules conflict, terminology is ambiguous, or boundaries are unclear, resolve the issue here before continuing.
+
+Each operational protocol lives in its own file under `docs/protocols/`. This file contains the Rule Priority table, arbitration principles, violation handling, and the protocol directory.
 
 ---
 
@@ -29,6 +31,41 @@ Nexus documents have a strict precedence order. When two documents conflict, the
 - A template cannot relax the "no vague acceptance criteria" rule.
 - A worked example cannot justify skipping a required checklist.
 - Philosophy cannot override a hard protocol (e.g., "Explicit Context > Implicit Memory" is philosophy; the 1200-line context limit in the Context Packaging Protocol is the binding rule).
+
+---
+
+## Core Arbitration Principles
+
+These principles govern all protocol decisions. When in doubt, apply them in order.
+
+### 1. Spec > Prompt
+A spec is the source of truth. A prompt is only a request derived from the spec.
+
+### 2. Workflow > Chat
+Conversation is a medium. Workflow is the system state.
+
+### 3. Review > Generation
+Generation is cheap. Review is where correctness is established.
+
+### 4. Explicit Context > Implicit Memory
+If it is important, it must be loaded explicitly.
+
+### 5. Human Final Judgment
+AI can recommend. AI cannot decide.
+
+---
+
+## Arbitration Procedure
+
+When rules conflict:
+
+1. Identify the conflicting documents or sections.
+2. Determine the highest-priority rule using the Rule Priority table above.
+3. Follow the highest-priority rule.
+4. Record the conflict if it may recur.
+5. Do not continue with invalid output.
+
+If the conflict affects a Critical Rule, stop the session and require explicit human approval before proceeding.
 
 ---
 
@@ -64,3 +101,15 @@ When a protocol is violated, the output is invalid. The violation must be detect
 | Artifact Quality | `docs/protocols/artifact-quality.md` | Five-dimensional quality standard for all artifacts |
 | Threshold Classification | `docs/protocols/threshold-classification.md` | Hard Limit / Soft Limit / Heuristic definitions |
 | Definitions | `docs/protocols/definitions.md` | Shared terms: severity levels, branch naming |
+
+---
+
+## Decision Rule
+
+If a rule does not help one of these outcomes, it should be removed or demoted:
+
+- Reduce ambiguity
+- Improve verification
+- Preserve human judgment
+- Improve reproducibility
+- Keep the system maintainable

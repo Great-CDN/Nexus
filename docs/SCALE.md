@@ -84,7 +84,7 @@ This keeps context under 500 lines.
 ### Context Loading at Scale
 
 ```
-Phase: Implementation
+Phase: Execute
 Task: Add OAuth2 provider to auth module
 
 System Architecture: [paste 50-line summary]

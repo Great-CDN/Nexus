@@ -50,9 +50,9 @@ Group features into phases by dependency closure. Each phase produces a working 
 
 | Phase | Features | Goal | Exit Condition |
 |-------|----------|------|----------------|
-| 1 | F-1 | Foundation laid; interfaces stable | All P0 features pass Acceptance |
-| 2 | F-2, F-3 | Core user value works end-to-end | All P1 features pass Acceptance |
-| 3 | F-4, F-5 | Enhanced experience | All P2 features pass Acceptance |
+| 1 | F-1 | Foundation laid; interfaces stable | All P0 features pass Decide |
+| 2 | F-2, F-3 | Core user value works end-to-end | All P1 features pass Decide |
+| 3 | F-4, F-5 | Enhanced experience | All P2 features pass Decide |
 
 ## MVP Boundary
 

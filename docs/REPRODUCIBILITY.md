@@ -139,7 +139,7 @@ If any item is missing, the session is not traceable. Do not proceed.
 
 ## When to Skip Snapshots
 
-Never skip snapshots for Implementation, Testing, or Acceptance phases.
+Never skip snapshots for Execute, Verify, or Decide phases.
 
 For Maintenance fixes, use **minimal snapshots**:
 - One-line fixes with no spec impact: `diff.patch` + one-line description in `context.md` is sufficient.

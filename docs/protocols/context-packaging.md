@@ -27,7 +27,7 @@ When starting a session for a task, provide:
 ### Example Context Package
 
 ```
-Phase: Implementation
+Phase: Execute
 Task: Implement the domain validation logic in DomainService
 
 Spec (relevant section):

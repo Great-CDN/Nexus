@@ -159,7 +159,7 @@ Attempt 3: AI explains "the hook handles all cases" but code clearly does not.
 
 ## Capability Assessment at Spec Time
 
-Before starting Implementation, assess whether AI can handle each task:
+Before starting Execute, assess whether AI can handle each task:
 
 | Task ID | Description | AI Capability | Plan |
 |---------|-------------|---------------|------|

@@ -39,7 +39,7 @@ For 90% of high-stakes decisions, you only need **Layer 1: Review Cross-Validati
 
 **Layer 2** (Generation): Two models implement the same spec independently. Divergence → spec ambiguity. Similarity → fuse best parts.
 
-**Layer 3** (Adversarial): Model B attacks Model A's design for 3 rounds max. If critical issues remain after round 3, the design is structurally flawed — return to Requirements.
+**Layer 3** (Adversarial): Model B attacks Model A's design for 3 rounds max. If critical issues remain after round 3, the design is structurally flawed — return to Specify.
 
 ---
 

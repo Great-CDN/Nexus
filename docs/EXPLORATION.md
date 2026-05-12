@@ -121,7 +121,7 @@ When exploration ends and you decide to build the real thing:
 1. **Archive the exploration branch.** Tag it: `git tag exploration/rule-editor-2026-05-11`.
 2. **Start fresh.** Create a new branch from main.
 3. **Write the spec using lessons from exploration.** Reference the Lessons Log, but do not copy exploration code into the spec.
-4. **Follow Nexus execution workflow.** Spec → Design → Implementation → Testing → Acceptance.
+4. **Follow Nexus execution workflow.** Discover → Specify → Design → Execute → Verify → Decide.
 5. **Do not port exploration code directly.** Re-implement with proper structure. You can reference the exploration branch for logic, but rewrite everything.
 
 ## Common Pitfalls
