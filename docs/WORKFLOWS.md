@@ -204,7 +204,7 @@ Implement one bounded task at a time.
 - Automated checks pass: type check, lint, static analysis, tests
 - Code matches the approved design (or deviation is documented)
 - Tests cover the relevant acceptance criteria
-- Human can explain what every changed line does
+- Human can explain the purpose of every changed region; boilerplate, configuration, or auto-generated patterns need only be reviewed for correctness, not individually explained
 
 ### Exit Conditions
 Run **CHECKLIST: Execute** from `docs/CHECKLISTS.md` per task. Do not mark a task complete until it passes.
@@ -321,7 +321,7 @@ Close the loop and record the decision.
 - Implementation matches the approved spec (no silent scope changes)
 - Every acceptance criterion is verified with evidence
 - Design deviations are documented with justification
-- No critical technical debt introduced
+- No critical technical debt introduced (see `docs/protocols/definitions.md` §Critical Technical Debt)
 - Human has verified critical paths manually
 
 ### Exit Conditions

@@ -24,4 +24,18 @@ Every severity assignment must include the justification described in the Justif
 | Exploration | `exploration/<YYYY-MM-DD>-<topic>` | `exploration/2026-05-11-dnd-kit` |
 | Hotfix | `hotfix/<issue-id-or-description>` | `hotfix/auth-token-leak` |
 
+### Critical Technical Debt
+
+Technical debt that meets any of the following criteria. Its presence blocks acceptance.
+
+| Criterion | Example |
+|-----------|---------|
+| Missing error handling in a security-sensitive or data-mutating path | API endpoint that returns 500 instead of validating input |
+| Hardcoded secrets, credentials, or environment-dependent values | API key in source code; database URL without config injection |
+| Unhandled failure modes with no recovery or logging | Background job that silently fails; network call without timeout or retry logic |
+| Untested critical path that cannot be verified by inspection | Payment flow with no test coverage; auth logic with no unit tests |
+| Design decision that blocks a known near-term requirement | Hardcoded schema that prevents the next planned feature |
+
+Debt that does not meet these criteria (e.g., suboptimal variable names, missing comments, non-critical refactoring opportunities) is **routine debt** and should be logged for future maintenance, not used to block acceptance.
+
 ---
