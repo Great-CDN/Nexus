@@ -96,7 +96,7 @@ Run this before declaring a feature complete.
 - [ ] Implementation matches the approved spec (no silent scope changes).
 - [ ] Every acceptance criterion is verified with evidence (test output, screenshot, log).
 - [ ] Design deviations are documented with justification.
-- [ ] No critical technical debt introduced.
+- [ ] No critical technical debt introduced (see `docs/protocols/definitions.md` §Critical Technical Debt).
 - [ ] Known technical debt is documented with priority.
 - [ ] Documentation is updated (README, API docs, inline comments where non-obvious).
 - [ ] Human has verified critical paths manually.

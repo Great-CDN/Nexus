@@ -79,7 +79,7 @@ Run `CHECKLIST: Artifact Quality` from `docs/CHECKLISTS.md` first. Then verify t
 - [ ] **Accurate**: Every issue references an exact file path and line number or function name.
 - [ ] **Accurate**: Every deviation from design or spec is explicitly called out, not implied.
 - [ ] **Complete**: Every acceptance criterion has a status (Pass / Fail / Partial) with evidence or rationale.
-- [ ] **Complete**: Severity is assigned to every issue (Critical / High / Medium / Low) with justification. See `docs/PROTOCOLS.md` §Definitions.
+- [ ] **Complete**: Severity is assigned to every issue (Critical / High / Medium / Low) with justification. See `docs/protocols/definitions.md` §Severity Levels.
 - [ ] **Complete**: Technical debt items include priority and a proposed resolution timeline.
 - [ ] **Simple**: Review is under 400 lines. If the change is too large to review in one pass, request it be split.
 - [ ] **Explicit**: Verdict is one of the three allowed states (Approve / Approve with notes / Request changes); no soft language like "looks okay".
