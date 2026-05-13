@@ -18,6 +18,7 @@
  *   OPENAI_API_KEY     - Required for --models gpt
  *   GOOGLE_API_KEY     - Required for --models gemini
  *   DEEPSEEK_API_KEY   - Required for --models deepseek
+ *   GLM_API_KEY        - Required for --models glm
  */
 
 const https = require('https');
@@ -78,6 +79,7 @@ function showCredentialHelp(missingKeys) {
   console.error('  export OPENAI_API_KEY=sk-...');
   console.error('  export GOOGLE_API_KEY=...');
   console.error('  export DEEPSEEK_API_KEY=sk-...');
+  console.error('  export GLM_API_KEY=...');
   console.error('  # Then run this script again.\n');
   console.error('Option 2 — User-level env file:');
   console.error('  Create one of these files (outside any git repo):');
@@ -88,6 +90,7 @@ function showCredentialHelp(missingKeys) {
   console.error('    OPENAI_API_KEY=sk-...');
   console.error('    GOOGLE_API_KEY=...');
   console.error('    DEEPSEEK_API_KEY=sk-...');
+  console.error('    GLM_API_KEY=...');
   console.error('  # Then run this script again.\n');
   console.error('Security note: Never commit API keys. Both options keep secrets');
   console.error('outside project directories.\n');
@@ -174,6 +177,27 @@ const PROVIDERS = {
       'Authorization': `Bearer ${apiKey}`,
     }),
   },
+  glm: {
+    name: 'GLM (Zhipu AI)',
+    host: 'open.bigmodel.cn',
+    path: '/api/paas/v4/chat/completions',
+    envKey: 'GLM_API_KEY',
+    model: 'glm-4-plus',
+    maxTokens: 4096,
+    buildRequest: (apiKey, content) => ({
+      model: PROVIDERS.glm.model,
+      max_tokens: PROVIDERS.glm.maxTokens,
+      messages: [
+        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
+        { role: 'user', content: content },
+      ],
+    }),
+    parseResponse: (body) => body.choices?.[0]?.message?.content || '(no response)',
+    buildHeaders: (apiKey) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    }),
+  },
 };
 
 const REVIEW_SYSTEM_PROMPT = `You are an experienced senior software engineer conducting a technical review.
@@ -216,11 +240,13 @@ Models:
   gpt      - OpenAI GPT (requires OPENAI_API_KEY)
   gemini   - Google Gemini (requires GOOGLE_API_KEY)
   deepseek - DeepSeek (requires DEEPSEEK_API_KEY)
+  glm      - Zhipu AI GLM (requires GLM_API_KEY)
 
 Examples:
   node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
   node tools/cross-validate.js src/auth.ts --models claude,gpt,gemini --out reports/
-  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek`);
+  node tools/cross-validate.js docs/PHILOSOPHY.md --models deepseek
+  node tools/cross-validate.js src/auth.ts --models claude,glm`);
 }
 
 // ---------------------------------------------------------------------------
@@ -359,7 +385,7 @@ async function main() {
   for (const model of args.models) {
     const provider = PROVIDERS[model];
     if (!provider) {
-      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek`);
+      console.error(`Error: Unknown model "${model}". Supported: claude, gpt, gemini, deepseek, glm`);
       process.exit(1);
     }
     const apiKey = process.env[provider.envKey];

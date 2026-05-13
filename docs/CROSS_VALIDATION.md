@@ -85,7 +85,7 @@ Should be **architecturally different** from the primary:
 - Different architecture (transformer variant, MoE vs dense)
 - Different provider (reduces shared infrastructure biases)
 
-Good pairs: Claude + GPT, Claude + Gemini.  
+Good pairs: Claude + GPT, Claude + Gemini, Claude + GLM.  
 Avoid: two models from the same base with minor fine-tuning differences.
 
 ### Step 3: Isolate Context
@@ -177,6 +177,9 @@ node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt
 # Use all three models
 node tools/cross-validate.js docs/DESIGN_DOC.md --models claude,gpt,gemini
 
+# Use GLM as secondary reviewer
+node tools/cross-validate.js src/auth.ts --models claude,glm
+
 # Output to a custom directory
 node tools/cross-validate.js src/auth.ts --models claude,gpt --out reports/
 ```
@@ -199,6 +202,7 @@ export ANTHROPIC_API_KEY=sk-ant-...
 export OPENAI_API_KEY=sk-...
 export GOOGLE_API_KEY=...
 export DEEPSEEK_API_KEY=sk-...
+export GLM_API_KEY=...
 ```
 
 Add these to your shell profile (`~/.bashrc`, `~/.zshrc`, or Windows system environment variables) to persist across sessions. Environment variables do not touch any file — the most secure option.
@@ -214,6 +218,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 GOOGLE_API_KEY=...
 DEEPSEEK_API_KEY=sk-...
+GLM_API_KEY=...
 EOF
 chmod 600 ~/.nexus/cross-validate.env
 ```

@@ -36,8 +36,9 @@ Which models should run the independent review?
 - claude  (Anthropic Claude — requires ANTHROPIC_API_KEY)
 - gpt     (OpenAI GPT — requires OPENAI_API_KEY)
 - gemini  (Google Gemini — requires GOOGLE_API_KEY)
+- glm     (Zhipu AI GLM — requires GLM_API_KEY)
 
-Recommended pairs: claude + gpt, or claude + gemini.
+Recommended pairs: claude + gpt, claude + gemini, or claude + glm.
 ```
 
 ### Step 3: Verify Environment (Security-Critical)
@@ -52,7 +53,7 @@ Check if the required API keys are available. The script searches in this order:
 ```bash
 node tools/cross-validate.js --help 2>&1 | head -1 || echo "Script exists"
 # Also verify env vars directly:
-env | grep -E 'ANTHROPIC_API_KEY|OPENAI_API_KEY|GOOGLE_API_KEY' | sed 's/=.*/=***/'
+env | grep -E 'ANTHROPIC_API_KEY|OPENAI_API_KEY|GOOGLE_API_KEY|GLM_API_KEY' | sed 's/=.*/=***/'
 ```
 
 If any required key is missing, stop and guide the user to configure it **outside the project**:
@@ -66,6 +67,7 @@ Option 1 — Shell environment variables (recommended for daily use):
   export ANTHROPIC_API_KEY=sk-ant-...
   export OPENAI_API_KEY=sk-...
   export GOOGLE_API_KEY=...
+  export GLM_API_KEY=...
   # Add these to your shell profile (~/.bashrc, ~/.zshrc, or Windows system env)
   # so they persist across terminal sessions.
 
@@ -75,6 +77,7 @@ Option 2 — User-level env file:
   ANTHROPIC_API_KEY=sk-ant-...
   OPENAI_API_KEY=sk-...
   GOOGLE_API_KEY=...
+  GLM_API_KEY=...
   EOF
   chmod 600 ~/.nexus/cross-validate.env
 
